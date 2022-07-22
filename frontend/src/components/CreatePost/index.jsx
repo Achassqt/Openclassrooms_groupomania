@@ -1,7 +1,4 @@
-import { AiOutlineGif } from 'react-icons/ai'
-import { BsEmojiSmile, BsGeoAlt, BsImage } from 'react-icons/bs'
-import { RiBarChartHorizontalLine } from 'react-icons/ri'
-import { TbCalendarTime } from 'react-icons/tb'
+import { BsEmojiSmile, BsImage } from 'react-icons/bs'
 import styled from 'styled-components'
 import white from '../../assets/white.png'
 import { ButtonPoster } from '../../utils/style/Button.jsx'

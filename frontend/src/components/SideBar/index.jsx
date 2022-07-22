@@ -1,12 +1,7 @@
-import { FaTwitter } from 'react-icons/fa'
-import { RiHome7Fill, RiHashtag } from 'react-icons/ri'
-import { BsPeople, BsPerson } from 'react-icons/bs'
+import { BsPerson } from 'react-icons/bs'
 import {
   IoEllipsisHorizontalSharp,
-  IoNotificationsOutline,
-  IoMailOutline,
   IoEllipsisHorizontalCircleOutline,
-  IoBookmarkOutline,
 } from 'react-icons/io5'
 import white from '../../assets/white.png'
 import groupomania from '../../assets/icon-left-font-removebg-preview.png'

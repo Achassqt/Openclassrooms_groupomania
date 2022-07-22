@@ -1,10 +1,7 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import { FaTwitter } from 'react-icons/fa'
-import { IoCloseOutline } from 'react-icons/io5'
-import { ButtonPoster } from '../../utils/style/Button'
-import iconGroupomania from '../../assets/icon-groupomania.png'
-import colors from '../../utils/style/colors'
+import Log from '../../components/Log'
+import { useState } from 'react'
+import axios from 'axios'
 
 const LoginWrapper = styled.div`
   position: absolute;
@@ -13,132 +10,72 @@ const LoginWrapper = styled.div`
   background-color: rgba(91, 112, 131, 0.4);
 `
 
-const LoginContent = styled.article`
-  background-color: ${colors.tertiary};
-  height: 650px;
-  width: 600px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 17px;
-  border: 1px solid ${colors.secondary};
-  display: flex;
-  flex-direction: column;
-
-  & > header {
-    /* background-color: green; */
-    border-radius: 17px 17px 0 0;
-    color: white;
-    width: 100%;
-    min-height: 53px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    & > a {
-      position: absolute;
-      left: 8px;
-      text-decoration: none;
-      color: white;
-      padding: 4px;
-      height: 28px;
-      width: 28px;
-
-      &:hover {
-        background-color: ${colors.hoverTertiary};
-        border-radius: 50%;
-      }
-
-      & > svg {
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    & > img {
-      height: 35px;
-      width: 35px;
-    }
-  }
-`
-
-const LoginSection = styled.section`
-  width: 364px;
-  margin: 0 auto;
-  padding: 0 32px;
-  padding-bottom: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  box-sizing: border-box;
-
-  & > h2 {
-    font-size: 31px;
-    color: white;
-    margin-bottom: 0;
-  }
-
-  & > form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 50px;
-
-    & > input {
-      background-color: ${colors.tertiary};
-      border: 1px ${colors.secondary} solid;
-      height: 60px;
-      margin: 10px 0;
-      border-radius: 5px;
-      font-size: 17px;
-      color: white;
-
-      ::placeholder {
-        color: white;
-      }
-    }
-
-    & > button {
-      height: 40px;
-      margin-top: 20px;
-      font-weight: 700;
-    }
-  }
-
-  & > span {
-    color: white;
-    font-size: 15px;
-
-    & > a {
-      text-decoration: none;
-      color: ${colors.primary};
-    }
-  }
-`
-
 function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState()
+  const [passwordError, setPasswordError] = useState()
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
+    await axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_API_URL}api/user/login`,
+      withCredentials: true,
+      data: {
+        email,
+        password,
+      },
+    })
+      .then((res) => {
+        if (res.data.errors) {
+          const emailDataError = res.data.errors.email
+          setEmailError({ __html: emailDataError })
+
+          const passwordDataError = res.data.errors.password
+          setPasswordError({ __html: passwordDataError })
+        } else {
+          window.location = '/home'
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const loginForm = [
+    {
+      id: 'login1',
+      type: 'text',
+      name: 'email',
+      placeholder: 'Email',
+      onChange: (e) => setEmail(e.target.value),
+      value: email,
+      dangerouslySetInnerHTML: emailError,
+    },
+    {
+      id: 'login2',
+      type: 'password',
+      name: 'password',
+      placeholder: 'Mot de passe',
+      onChange: (e) => setPassword(e.target.value),
+      value: password,
+      dangerouslySetInnerHTML: passwordError,
+    },
+  ]
+
   return (
     <LoginWrapper>
-      <LoginContent>
-        <header>
-          <Link to="/">
-            <IoCloseOutline />
-          </Link>
-          <img src={iconGroupomania} alt="fezf" />
-        </header>
-        <LoginSection>
-          <h2>Connectez-vous à Twitter</h2>
-          <form>
-            <input type="text" placeholder="Email"></input>
-            <input type="text" placeholder="Password"></input>
-            <ButtonPoster>Se connecter</ButtonPoster>
-          </form>
-          <span>
-            Vous n'avez pas de compte ? <Link to="/signup">Inscrivez-vous</Link>
-          </span>
-        </LoginSection>
-      </LoginContent>
+      <Log
+        title="Connectez-vous à Groupomania"
+        btnName="Se connecter"
+        question="Vous n'avez pas de compte ?"
+        link="/signup"
+        linkName="Inscrivez-vous"
+        handleFunction={handleLogin}
+        mapForm={loginForm}
+      />
     </LoginWrapper>
   )
 }

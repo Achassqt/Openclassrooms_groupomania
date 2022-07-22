@@ -6,7 +6,7 @@ import Widgets from '../../components/Widgets'
 import Search from '../../components/Search'
 import Header from '../../components/Header'
 import { Outlet } from 'react-router-dom'
-import colors from '../../utils/style/colors'
+// import colors from '../../utils/style/colors'
 
 const HomeWrapper = styled.div`
   height: 100vh;
@@ -42,8 +42,8 @@ function Home() {
           <Feed />
         </CenterWrapper>
         <RightSideWrapper>
-          {/* <Search />
-          <Widgets /> */}
+          <Search />
+          <Widgets />
         </RightSideWrapper>
       </StyledMain>
       <Outlet />

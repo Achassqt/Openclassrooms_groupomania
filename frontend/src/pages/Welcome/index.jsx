@@ -1,17 +1,16 @@
 import styled from 'styled-components'
-import { FaTwitter } from 'react-icons/fa'
 import { Outlet, Link } from 'react-router-dom'
 import groupomania from '../../assets/icon-left-font.svg'
 import iconGroupomania from '../../assets/icon-groupomania.png'
 import background from '../../assets/welcome-background.jpg'
 import { ButtonPoster } from '../../utils/style/Button'
-import colors from '../../utils/style/colors'
+// import colors from '../../utils/style/colors'
 
-const LoginWrapper = styled.main`
+const WelcomeWrapper = styled.main`
   height: 100vh;
   width: 100%;
   display: flex;
-  flex-flow: row wrap;
+  /* flex-flow: row wrap; */
   /* background-color: black; */
 
   .left-side-wrapper {
@@ -19,7 +18,8 @@ const LoginWrapper = styled.main`
     /* background-color: red; */
     width: 47%;
     /* height: 91%; */
-    height: 100%;
+    /* height: 100%; */
+    overflow: hidden;
 
     .left-side-background {
       height: 100%;
@@ -87,11 +87,12 @@ const LinksContent = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
+  width: 300px;
 
   .singup-link {
     & > button {
       height: 40px;
-      width: 300px;
+      width: 100%;
     }
   }
 
@@ -107,7 +108,7 @@ const LinksContent = styled.div`
     .login-link {
       & > button {
         height: 40px;
-        width: 300px;
+        width: 100%;
       }
     }
   }
@@ -115,7 +116,7 @@ const LinksContent = styled.div`
 
 function Welcome() {
   return (
-    <LoginWrapper>
+    <WelcomeWrapper>
       <div className="left-side-wrapper">
         <img className="left-side-background" src={background} alt="fond" />
         <img className="logo-groupomania" src={groupomania} alt="entreprise" />
@@ -141,7 +142,7 @@ function Welcome() {
       {/* <footer className="footer-content"></footer> */}
 
       <Outlet />
-    </LoginWrapper>
+    </WelcomeWrapper>
   )
 }
 
