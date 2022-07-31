@@ -13,7 +13,14 @@ exports.signup = async (req, res) => {
   const { pseudo, email, password } = req.body;
 
   try {
-    const user = await User.create({ pseudo, email, password });
+    const user = await User.create({
+      pseudo,
+      email,
+      password,
+      imageUrl: `${req.protocol}://${req.get(
+        "host"
+      )}/uploads/images/profil/random-user.png`,
+    });
     res.status(201).json({ user: user._id });
   } catch (err) {
     console.log(err);

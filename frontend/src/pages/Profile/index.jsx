@@ -1,9 +1,14 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { IoCloseOutline } from 'react-icons/io5'
-import white from '../../assets/white.png'
+import { FaRegEdit } from 'react-icons/fa'
+// import white from '../../assets/white.png'
 import { ButtonPoster } from '../../utils/style/Button'
 import colors from '../../utils/style/colors'
+import { useContext, useState } from 'react'
+import { Context } from '../../utils/AppContext'
+import { dateParser } from '../../utils/Timestamps'
+// import axios from 'axios'
 
 const ProfileWrapper = styled.div`
   position: absolute;
@@ -63,9 +68,11 @@ const ProfileContent = styled.article`
       padding: 0 16px;
 
       .title {
-        font-size: 20px;
+        position: relative;
+        top: 1px;
+        font-size: 19px;
         font-weight: 700;
-        padding-left: 5px;
+        padding-left: 9px;
       }
 
       .btn-enregistrer {
@@ -89,23 +96,120 @@ const ProfileSection = styled.section`
   box-sizing: border-box;
 
   .images {
+    .no-banner-container {
+      height: 195px;
+      width: 100%;
+      position: relative;
+
+      .no-banner {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .edit-no-banner-container {
+        background-color: ${colors.hoverTertiary};
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        .edit-no-banner-btn {
+          background-color: ${colors.primary}99;
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          border: none;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          :hover {
+            background-color: ${colors.hoverPrimary}99;
+            /* background-color: ${colors.tertiary}99; */
+          }
+
+          .edit-no-banner-logo {
+            width: 22px;
+            height: 22px;
+            color: white;
+          }
+        }
+      }
+    }
+
     .banner {
       height: 195px;
       width: 100%;
       object-fit: cover;
-      border: 2px solid ${colors.tertiary};
+      border-left: 1px solid ${colors.tertiary};
+      border-right: 1px solid ${colors.tertiary};
       box-sizing: border-box;
     }
 
-    .pp {
+    .profile-picture-container {
+      position: relative;
       height: 115px;
       width: 115px;
+      margin: -50px 0 0 20px;
       border-radius: 50%;
-      border: 2px solid black;
-      /* position: relative;
-      bottom: 50px;
-      left: 15px; */
-      margin: -50px 0 0 15px;
+
+      .profile-picture {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        outline: 2px solid ${colors.tertiary};
+        /* position: relative;
+        bottom: 50px;
+        left: 15px; */
+        /* margin: -50px 0 0 20px; */
+      }
+
+      .edit-picture-container {
+        background-color: ${colors.hoverTertiary}50;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        .edit-picture-btn {
+          background-color: ${colors.primary}99;
+          /* background-color: ${colors.tertiary}50; */
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          border: none;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          :hover {
+            background-color: ${colors.hoverPrimary}99;
+            /* background-color: ${colors.tertiary}99; */
+          }
+
+          .edit-picture-logo {
+            width: 22px;
+            height: 22px;
+            color: white;
+          }
+        }
+      }
     }
   }
 
@@ -118,10 +222,17 @@ const ProfileSection = styled.section`
       background-color: ${colors.tertiary};
       border: 1px ${colors.secondary} solid;
       height: 60px;
-      margin: 12px 16px;
+      margin: 12px 20px;
+      margin-top: 40px;
       border-radius: 5px;
       font-size: 17px;
       color: white;
+      padding: 0 10px;
+
+      :focus {
+        /* border-color: ${colors.primary}; */
+        outline: none;
+      }
 
       &::placeholder {
         color: white;
@@ -132,6 +243,32 @@ const ProfileSection = styled.section`
 `
 
 function Profile() {
+  const { userData } = useContext(Context)
+  const [hoverStylePicture, setHoverStylePicture] = useState(false)
+  const [hoverStyleBanner, setHoverStyleBanner] = useState(false)
+  const [pseudo, setPseudo] = useState(userData.pseudo)
+  const [file, setFile] = useState(userData.banner)
+  // const dateUserCreation = userData.timestamps
+  // const formatDate = (date) => {
+  //   const options = { years: 'numeric', month: 'long', day: 'numeric' }
+  //   return new Date(date).toLocalDateString(undefined, options)
+  // }
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
+
+  //   await axios ({
+  //     method: 'put',
+  //     url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
+  //     withCredentials: true,
+  //     data: {
+  //       pseudo,
+  //       imageUrl,
+  //       banner,
+  //     },
+  //   })
+  // }
+
   return (
     <ProfileWrapper>
       <ProfileContent>
@@ -146,12 +283,63 @@ function Profile() {
         </header>
         <ProfileSection>
           <div className="images">
-            <img className="banner" src={white} alt="pp" />
-            <img className="pp" src={white} alt="pp" />
+            {file ? (
+              <div className="banner-container">
+                <img className="banner" src={userData.banner} alt="pp" />
+                <div className="edit-banner-container">
+                  <button className="edit-banner-btn">
+                    <FaRegEdit className="edit-banner-logo" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="no-banner-container"
+                onMouseEnter={() => setHoverStyleBanner(true)}
+                onMouseLeave={() => setHoverStyleBanner(false)}
+              >
+                <div className="no-banner"></div>
+                <div className="edit-no-banner-container">
+                  <button
+                    style={{ display: hoverStyleBanner ? 'block' : 'none' }}
+                    className="edit-no-banner-btn"
+                  >
+                    <FaRegEdit className="edit-no-banner-logo" />
+                  </button>
+                </div>
+              </div>
+            )}
+            <div
+              className="profile-picture-container"
+              onMouseEnter={() => setHoverStylePicture(true)}
+              onMouseLeave={() => setHoverStylePicture(false)}
+            >
+              <img
+                className="profile-picture"
+                src={`../${userData.imageUrl}`}
+                alt="pp"
+              />
+              <div
+                className="edit-picture-container"
+                style={{ display: hoverStylePicture ? 'block' : 'none' }}
+              >
+                <button className="edit-picture-btn">
+                  <FaRegEdit className="edit-picture-logo" />
+                </button>
+              </div>
+            </div>
           </div>
           <form>
-            <input type="text" placeholder="Nom"></input>
+            <input
+              type="text"
+              placeholder="Pseudo"
+              onChange={(e) => setPseudo(e.target.value)}
+              value={pseudo}
+            ></input>
           </form>
+          <span>
+            A rejoint Groupomania en {dateParser(userData.timestamps)}
+          </span>
         </ProfileSection>
       </ProfileContent>
     </ProfileWrapper>

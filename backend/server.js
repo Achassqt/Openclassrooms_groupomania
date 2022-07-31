@@ -29,11 +29,11 @@ app.get("/jwtid", requireAuth, (req, res) => {
   res.status(200).send(res.locals.user._id);
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-
 // routes
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // server
 app.listen(process.env.PORT, () => {

@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import SideBar from '../../components/SideBar'
 import CreatePost from '../../components/CreatePost'
 import Feed from '../../components/Feed'
-import Widgets from '../../components/Widgets'
-import Search from '../../components/Search'
+// import Widgets from '../../components/Widgets'
+// import Search from '../../components/Search'
 import Header from '../../components/Header'
 import { Outlet } from 'react-router-dom'
 // import colors from '../../utils/style/colors'
@@ -42,8 +42,8 @@ function Home() {
           <Feed />
         </CenterWrapper>
         <RightSideWrapper>
-          <Search />
-          <Widgets />
+          {/* <Search /> */}
+          {/* <Widgets /> */}
         </RightSideWrapper>
       </StyledMain>
       <Outlet />
