@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
     },
     banner: {
       type: String,
-      default: "./uploads/images/profil/banner/default-banner.png",
+      // default: "./uploads/images/profil/banner/default-banner.png",
     },
     likes: {
       type: [String],

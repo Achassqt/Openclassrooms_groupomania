@@ -2,13 +2,11 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { IoCloseOutline } from 'react-icons/io5'
 import { FaRegEdit } from 'react-icons/fa'
-// import white from '../../assets/white.png'
 import { ButtonPoster } from '../../utils/style/Button'
 import colors from '../../utils/style/colors'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Context } from '../../utils/AppContext'
-import { dateParser } from '../../utils/Timestamps'
-// import axios from 'axios'
+import axios from 'axios'
 
 const ProfileWrapper = styled.div`
   position: absolute;
@@ -18,7 +16,7 @@ const ProfileWrapper = styled.div`
   z-index: 1;
 `
 
-const ProfileContent = styled.article`
+const ProfileContent = styled.form`
   background-color: ${colors.tertiary};
   height: 650px;
   width: 600px;
@@ -75,6 +73,16 @@ const ProfileContent = styled.article`
         padding-left: 9px;
       }
 
+      .btn-annuler {
+        /* display: none; */
+        position: relative;
+        left: 60px;
+        font-size: 14px;
+        font-weight: 700;
+        height: 34px;
+        width: 100px;
+      }
+
       .btn-enregistrer {
         font-size: 14px;
         font-weight: 700;
@@ -88,35 +96,42 @@ const ProfileContent = styled.article`
 const ProfileSection = styled.section`
   width: 100%;
   margin: 0 auto;
-  padding-bottom: 60px;
+  /* padding-bottom: 60px; */
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   height: 100%;
   box-sizing: border-box;
 
   .images {
-    .no-banner-container {
-      height: 195px;
+    .banner-container {
+      height: 200px;
       width: 100%;
       position: relative;
 
-      .no-banner {
+      .banner {
         height: 100%;
         width: 100%;
         object-fit: cover;
+        border: 3px solid ${colors.tertiary};
+        border-radius: 3px;
+        box-sizing: border-box;
       }
 
-      .edit-no-banner-container {
-        background-color: ${colors.hoverTertiary};
+      .edit-banner-container {
+        /* background-color: ${colors.hoverTertiary}; */
+        background-color: ${colors.hoverTertiary}50;
         width: 100%;
         height: 100%;
+        border-radius: 3px;
+        border: 3px solid ${colors.tertiary};
+        box-sizing: border-box;
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
 
-        .edit-no-banner-btn {
+        .edit-banner-btn {
           background-color: ${colors.primary}99;
           width: 42px;
           height: 42px;
@@ -136,210 +151,424 @@ const ProfileSection = styled.section`
             /* background-color: ${colors.tertiary}99; */
           }
 
-          .edit-no-banner-logo {
+          & > input {
+            display: none;
+          }
+
+          .edit-banner-logo {
             width: 22px;
             height: 22px;
             color: white;
           }
+
+          .banner-aria-label {
+            background-color: ${colors.primary}80;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: -25px;
+            width: 100px;
+            height: 20px;
+            border-radius: 2px;
+            font-size: 12px;
+            color: white;
+          }
+
+          &:hover > .banner-aria-label {
+            display: flex;
+          }
         }
       }
     }
+  }
 
-    .banner {
+  /* .banner {
       height: 195px;
       width: 100%;
       object-fit: cover;
       border-left: 1px solid ${colors.tertiary};
       border-right: 1px solid ${colors.tertiary};
       box-sizing: border-box;
-    }
+    } */
 
-    .profile-picture-container {
-      position: relative;
-      height: 115px;
-      width: 115px;
-      margin: -50px 0 0 20px;
+  .profile-picture-container {
+    position: relative;
+    height: 115px;
+    width: 115px;
+    margin: -50px 0 0 20px;
+    border-radius: 50%;
+
+    .profile-picture {
+      height: 100%;
+      width: 100%;
       border-radius: 50%;
-
-      .profile-picture {
-        height: 100%;
-        width: 100%;
-        border-radius: 50%;
-        outline: 2px solid ${colors.tertiary};
-        /* position: relative;
+      outline: 2px solid ${colors.tertiary};
+      /* position: relative;
         bottom: 50px;
         left: 15px; */
-        /* margin: -50px 0 0 20px; */
-      }
+      /* margin: -50px 0 0 20px; */
+    }
 
-      .edit-picture-container {
-        background-color: ${colors.hoverTertiary}50;
-        width: 100%;
-        height: 100%;
+    .edit-picture-container {
+      /* background-color: red; */
+      background-color: ${colors.hoverTertiary}50;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      .edit-picture-btn {
+        background-color: ${colors.primary}99;
+        /* background-color: ${colors.tertiary}50; */
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
+        border: none;
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        .edit-picture-btn {
-          background-color: ${colors.primary}99;
-          /* background-color: ${colors.tertiary}50; */
-          width: 42px;
-          height: 42px;
-          border-radius: 50%;
-          border: none;
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
+        :hover {
+          background-color: ${colors.hoverPrimary}99;
+          /* background-color: ${colors.tertiary}99; */
+        }
+
+        & > input {
+          display: none;
+        }
+
+        .edit-picture-logo {
+          width: 22px;
+          height: 22px;
+          color: white;
+        }
+
+        .picture-aria-label {
+          background-color: ${colors.primary}80;
+          display: none;
           justify-content: center;
+          align-items: center;
+          position: absolute;
+          bottom: -23px;
+          width: 100px;
+          height: 20px;
+          border-radius: 2px;
+          font-size: 12px;
+          color: white;
+        }
 
-          :hover {
-            background-color: ${colors.hoverPrimary}99;
-            /* background-color: ${colors.tertiary}99; */
-          }
-
-          .edit-picture-logo {
-            width: 22px;
-            height: 22px;
-            color: white;
-          }
+        &:hover > .picture-aria-label {
+          display: flex;
         }
       }
     }
   }
 
-  & > form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 50px;
+  .date {
+    margin: 20px;
+  }
 
-    & > input {
-      background-color: ${colors.tertiary};
-      border: 1px ${colors.secondary} solid;
-      height: 60px;
-      margin: 12px 20px;
-      margin-top: 40px;
-      border-radius: 5px;
-      font-size: 17px;
-      color: white;
-      padding: 0 10px;
+  & > input {
+    position: relative;
+    top: -60px;
+    background-color: ${colors.tertiary};
+    border: 1px ${colors.secondary} solid;
+    height: 60px;
+    margin: 0 20px;
+    border-radius: 5px;
+    font-size: 17px;
+    color: white;
+    padding: 0 10px;
 
-      :focus {
-        /* border-color: ${colors.primary}; */
-        outline: none;
-      }
-
-      &::placeholder {
-        color: white;
-        /* padding-left: 10px; */
-      }
+    :focus {
+      /* border-color: ${colors.primary}; */
+      outline: none;
     }
+
+    &::placeholder {
+      color: white;
+      /* padding-left: 10px; */
+    }
+  }
+
+  .date {
+    margin: 0 20px 30px;
+    font-weight: bold;
+    color: white;
   }
 `
 
 function Profile() {
-  const { userData } = useContext(Context)
+  const { uid, userData } = useContext(Context)
   const [hoverStylePicture, setHoverStylePicture] = useState(false)
   const [hoverStyleBanner, setHoverStyleBanner] = useState(false)
   const [pseudo, setPseudo] = useState(userData.pseudo)
-  const [file, setFile] = useState(userData.banner)
-  // const dateUserCreation = userData.timestamps
-  // const formatDate = (date) => {
-  //   const options = { years: 'numeric', month: 'long', day: 'numeric' }
-  //   return new Date(date).toLocalDateString(undefined, options)
-  // }
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
+  const [profileFile, setProfileFile] = useState(null)
+  const [bannerFile, setBannerFile] = useState(null)
+  const [profilePreview, setProfilePreview] = useState(null)
+  const [bannerPreview, setBannerPreview] = useState(null)
 
-  //   await axios ({
-  //     method: 'put',
-  //     url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
-  //     withCredentials: true,
-  //     data: {
-  //       pseudo,
-  //       imageUrl,
-  //       banner,
-  //     },
-  //   })
-  // }
+  const [imageErrors, setImageErrors] = useState({ type: '', erreur: '' })
+  // const [pseudoErrors, setPseudoErrors] = useState()
+
+  // const [image, setImage] = useState()
+
+  function handleProfileFile(e) {
+    const file = e.target.files[0]
+
+    if (file.size > 5242880) {
+      setImageErrors({ type: 'format', message: 'Taille maximal: 5MB' })
+      return imageErrors
+    } else {
+      setProfileFile(file)
+      setImageErrors({ type: '', message: '' })
+    }
+  }
+
+  function handleBannerFile(e) {
+    const file = e.target.files[0]
+
+    if (file.size > 5242880) {
+      setImageErrors({ type: 'format', message: 'Taille maximal: 5MB' })
+      return imageErrors
+    } else {
+      setBannerFile(file)
+      setImageErrors({ type: '', message: '' })
+    }
+  }
+
+  useEffect(() => {
+    if (profileFile) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setProfilePreview(reader.result)
+      }
+      reader.readAsDataURL(profileFile)
+    }
+    if (bannerFile) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setBannerPreview(reader.result)
+      }
+      reader.readAsDataURL(bannerFile)
+    }
+  }, [profileFile, bannerFile])
+
+  let date = new Intl.DateTimeFormat('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+  }).format(userData.timestamps)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (userData.pseudo !== pseudo) {
+      await axios({
+        method: 'put',
+        url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
+        data: {
+          pseudo,
+        },
+      })
+        .then((res) => {
+          setPseudo(res.data.pseudo)
+        })
+        .catch((err) => console.log(err))
+    }
+
+    if (profileFile !== null) {
+      const formDataProfile = new FormData()
+      formDataProfile.append('file', profileFile)
+
+      await axios({
+        method: 'put',
+        url: `${process.env.REACT_APP_API_URL}api/user/upload/profile-picture/${uid}`,
+        data: formDataProfile,
+      })
+        .then(() => {
+          setProfileFile(null)
+          console.log('Photo modifiée')
+        })
+        .catch((err) => console.log(err))
+    }
+
+    if (bannerFile !== null) {
+      const formDataBanner = new FormData()
+      formDataBanner.append('file', bannerFile)
+
+      await axios({
+        method: 'put',
+        url: `${process.env.REACT_APP_API_URL}api/user/upload/banner/${uid}`,
+        data: formDataBanner,
+      })
+        .then(() => {
+          setBannerFile(null)
+          console.log('Bannière modifiée')
+        })
+        .catch((err) => console.log(err))
+    }
+  }
 
   return (
     <ProfileWrapper>
-      <ProfileContent>
+      <ProfileContent onSubmit={handleSubmit}>
         <header>
           <Link to="/home">
             <IoCloseOutline />
           </Link>
           <div className="header-right-side">
             <span className="title">Éditer le profil</span>
-            <ButtonPoster className="btn-enregistrer">Enregistrer</ButtonPoster>
+            <ButtonPoster
+              onClick={() => {
+                setPseudo(userData.pseudo)
+                setProfilePreview(null)
+                setBannerPreview(null)
+              }}
+              type="button"
+              className="btn-annuler"
+              style={{
+                display:
+                  pseudo !== userData.pseudo || profilePreview || bannerPreview
+                    ? 'block'
+                    : 'none',
+              }}
+            >
+              Annuler
+            </ButtonPoster>
+            <ButtonPoster type="submit" className="btn-enregistrer">
+              Enregistrer
+            </ButtonPoster>
           </div>
         </header>
         <ProfileSection>
           <div className="images">
-            {file ? (
-              <div className="banner-container">
-                <img className="banner" src={userData.banner} alt="pp" />
-                <div className="edit-banner-container">
-                  <button className="edit-banner-btn">
+            {userData.banner ? (
+              <div
+                onMouseEnter={() => setHoverStyleBanner(true)}
+                onMouseLeave={() => setHoverStyleBanner(false)}
+                className="banner-container"
+              >
+                {bannerPreview ? (
+                  <img src={bannerPreview} className="banner" alt="bannière" />
+                ) : (
+                  <img
+                    className="banner"
+                    src={userData.banner}
+                    alt="bannière"
+                  />
+                )}
+                <div
+                  style={{ display: hoverStyleBanner ? 'block' : 'none' }}
+                  className="edit-banner-container"
+                >
+                  <label htmlFor="banner-preview" className="edit-banner-btn">
                     <FaRegEdit className="edit-banner-logo" />
-                  </button>
+                    <input
+                      id="banner-preview"
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBannerFile}
+                    ></input>
+                    <div className="banner-aria-label">Ajouter une photo</div>
+                  </label>
                 </div>
               </div>
             ) : (
               <div
-                className="no-banner-container"
+                className="banner-container"
                 onMouseEnter={() => setHoverStyleBanner(true)}
                 onMouseLeave={() => setHoverStyleBanner(false)}
               >
-                <div className="no-banner"></div>
-                <div className="edit-no-banner-container">
-                  <button
-                    style={{ display: hoverStyleBanner ? 'block' : 'none' }}
-                    className="edit-no-banner-btn"
-                  >
-                    <FaRegEdit className="edit-no-banner-logo" />
-                  </button>
+                {bannerPreview ? (
+                  <img src={bannerPreview} className="banner" alt="bannière" />
+                ) : (
+                  <div
+                    style={{
+                      backgroundColor: userData.banner
+                        ? null
+                        : `${colors.secondary}`,
+                    }}
+                    className="banner"
+                  ></div>
+                )}
+                <div
+                  style={{ display: hoverStyleBanner ? 'block' : 'none' }}
+                  className="edit-banner-container"
+                >
+                  <label htmlFor="banner-preview" className="edit-banner-btn">
+                    <FaRegEdit className="edit-banner-logo" />
+                    <input
+                      id="banner-preview"
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBannerFile}
+                      // style={{ display: 'block' }}
+                    ></input>
+                    <div className="banner-aria-label">Ajouter une photo</div>
+                  </label>
                 </div>
               </div>
             )}
+
             <div
               className="profile-picture-container"
               onMouseEnter={() => setHoverStylePicture(true)}
               onMouseLeave={() => setHoverStylePicture(false)}
             >
-              <img
-                className="profile-picture"
-                src={`../${userData.imageUrl}`}
-                alt="pp"
-              />
+              {profilePreview ? (
+                <img
+                  className="profile-picture"
+                  src={profilePreview}
+                  alt="pp"
+                />
+              ) : (
+                <img
+                  className="profile-picture"
+                  src={`${userData.imageUrl}`}
+                  alt="pp"
+                />
+              )}
               <div
                 className="edit-picture-container"
                 style={{ display: hoverStylePicture ? 'block' : 'none' }}
               >
-                <button className="edit-picture-btn">
+                <label
+                  htmlFor="profile-picture-preview"
+                  className="edit-picture-btn"
+                >
                   <FaRegEdit className="edit-picture-logo" />
-                </button>
+                  <input
+                    id="profile-picture-preview"
+                    name="file"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileFile}
+                  ></input>
+                  <div className="picture-aria-label">Ajouter une photo</div>
+                </label>
               </div>
             </div>
           </div>
-          <form>
-            <input
-              type="text"
-              placeholder="Pseudo"
-              onChange={(e) => setPseudo(e.target.value)}
-              value={pseudo}
-            ></input>
-          </form>
-          <span>
-            A rejoint Groupomania en {dateParser(userData.timestamps)}
-          </span>
+          <input
+            type="text"
+            placeholder="Pseudo"
+            onChange={(e) => setPseudo(e.target.value)}
+            value={pseudo}
+          ></input>
+
+          <span className="date">A rejoint Groupomania en {date}</span>
         </ProfileSection>
       </ProfileContent>
     </ProfileWrapper>

@@ -20,6 +20,9 @@ exports.signup = async (req, res) => {
       imageUrl: `${req.protocol}://${req.get(
         "host"
       )}/uploads/images/profil/random-user.png`,
+      // banner: `${req.protocol}://${req.get(
+      //   "host"
+      // )}/uploads/images/profil/banner/default-banner.png`,
     });
     res.status(201).json({ user: user._id });
   } catch (err) {

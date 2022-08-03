@@ -70,20 +70,20 @@ exports.uploadProfilePicture = (req, res) => {
           }
         )
           .then(() => res.status(200).json({ message: "Photo modifiée!" }))
-          .catch((error) => res.status(400).json({ error }));
+          .catch((err) => res.status(400).json({ err }));
       } else {
         res.status(401).json({ error: "Non autorisé" });
       }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((err) => res.status(500).json({ err }));
 };
 
 exports.uploadBanner = (req, res) => {
   User.findOne({ _id: req.params.id })
     .then((user) => {
       // suppresion de l'ancienne image
-      const filename = user.banner.split("/uploads/images/profil/banner/")[1];
-      if (req.file && filename !== "default-banner.png") {
+      if (user.banner) {
+        const filename = user.banner.split("/uploads/images/profil/banner/")[1];
         fs.unlink(`uploads/images/profil/banner/${filename}`, (err) => {
           if (err) {
             throw err;
@@ -104,12 +104,12 @@ exports.uploadBanner = (req, res) => {
           }
         )
           .then(() => res.status(200).json({ message: "Bannière modifiée!" }))
-          .catch((error) => res.status(400).json({ error }));
+          .catch((err) => res.status(400).json({ err }));
       } else {
-        res.status(401).json({ error: "Non autorisé" });
+        res.status(401).json({ err: "Non autorisé" });
       }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((err) => res.status(500).json({ err }));
 };
 
 exports.deleteUser = async (req, res) => {
