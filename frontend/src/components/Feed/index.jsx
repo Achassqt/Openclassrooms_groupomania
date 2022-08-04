@@ -3,56 +3,59 @@ import { IoEllipsisHorizontalSharp } from 'react-icons/io5'
 import { TbMessageCircle2 } from 'react-icons/tb'
 import { AiOutlineRetweet, AiOutlineHeart } from 'react-icons/ai'
 import { MdOutlineIosShare } from 'react-icons/md'
-import white from '../../assets/white.png'
+// import white from '../../assets/white.png'
 import colors from '../../utils/style/colors'
 
-const FeedData = [
-  {
-    pp: white,
-    blaze: 'Goku',
-    arobase: '@Gokudu17',
-    text: 'Ouais ouais ouais le dragon là',
-    img: white,
-  },
-  {
-    pp: white,
-    blaze: 'Goku',
-    arobase: '@Gokudu17',
-    text: 'Ouais ouais ouais le dragon là',
-    img: white,
-  },
-  {
-    pp: white,
-    blaze: 'Goku',
-    arobase: '@Gokudu17',
-    text: 'Ouais ouais ouais le dragon là',
-    img: white,
-  },
-  {
-    pp: white,
-    blaze: 'Goku',
-    arobase: '@Gokudu17',
-    text: 'Ouais ouais ouais le dragon là',
-    img: white,
-  },
-  {
-    pp: white,
-    blaze: 'Goku',
-    arobase: '@Gokudu17',
-    text: 'Ouais ouais ouais le dragon là',
-    img: white,
-  },
-]
+// const FeedData = [
+//   {
+//     pp: white,
+//     blaze: 'Goku',
+//     arobase: '@Gokudu17',
+//     text: 'Ouais ouais ouais le dragon là',
+//     img: white,
+//   },
+//   {
+//     pp: white,
+//     blaze: 'Goku',
+//     arobase: '@Gokudu17',
+//     text: 'Ouais ouais ouais le dragon là',
+//     img: white,
+//   },
+//   {
+//     pp: white,
+//     blaze: 'Goku',
+//     arobase: '@Gokudu17',
+//     text: 'Ouais ouais ouais le dragon là',
+//     img: white,
+//   },
+//   {
+//     pp: white,
+//     blaze: 'Goku',
+//     arobase: '@Gokudu17',
+//     text: 'Ouais ouais ouais le dragon là',
+//     img: white,
+//   },
+//   {
+//     pp: white,
+//     blaze: 'Goku',
+//     arobase: '@Gokudu17',
+//     text: 'Ouais ouais ouais le dragon là',
+//     img: white,
+//   },
+// ]
 
-const FeedWrapper = styled.section``
+const FeedWrapper = styled.section`
+  /* border-right: solid 1px ${colors.secondary}; */
+  /* box-sizing: border-box; */
+`
 
 const FeedPost = styled.div`
   display: flex;
   border-bottom: solid 1px ${colors.secondary};
-  border-right: solid 1px ${colors.secondary};
+  /* border-right: solid 1px ${colors.secondary}; */
   padding: 0 16px;
   padding-top: 12px;
-  width: 565px;
+  box-sizing: border-box;
 `
 
 const FeedPostLeft = styled.div`
@@ -120,44 +123,52 @@ const FeedPostIcons = styled.div`
   color: ${colors.secondary};
 `
 
-function Feed() {
+function Feed({ usersData }) {
+  const isEmpty = (value) => {
+    return (
+      value === undefined ||
+      value === null ||
+      (typeof value === 'object' && Object.keys(value).length === 0) ||
+      (typeof value === 'string' && value.trim().length === 0)
+    )
+  }
+
   return (
     <FeedWrapper>
-      {FeedData.map((val, index) => (
-        <FeedPost key={index}>
-          <FeedPostLeft>
-            <img src={val.pp} alt="img" />
-          </FeedPostLeft>
-          <FeedPostRight>
-            <FeedPostHeader>
-              <span>{val.blaze}</span>
-              <div className="troispoints">
-                <IoEllipsisHorizontalSharp />
-              </div>
-            </FeedPostHeader>
-            <FeedPostText>
-              <span>{val.text}</span>
-            </FeedPostText>
-            <FeedPostImage>
-              <img src={val.img} alt="img" />
-            </FeedPostImage>
-            <FeedPostIcons>
-              <div>
-                <TbMessageCircle2 />
-              </div>
-              <div>
-                <AiOutlineRetweet />
-              </div>
-              <div>
-                <AiOutlineHeart />
-              </div>
-              <div>
-                <MdOutlineIosShare />
-              </div>
-            </FeedPostIcons>
-          </FeedPostRight>
-        </FeedPost>
-      ))}
+      {!isEmpty(usersData[0]) &&
+        usersData.map((val, index) => (
+          <FeedPost key={index}>
+            <FeedPostLeft>
+              <img src={val.imageUrl} alt="img" />
+            </FeedPostLeft>
+            <FeedPostRight>
+              <FeedPostHeader>
+                <span>{val.pseudo}</span>
+                <div className="troispoints">
+                  <IoEllipsisHorizontalSharp />
+                </div>
+              </FeedPostHeader>
+              <FeedPostText>{/* <span>{val.text}</span> */}</FeedPostText>
+              <FeedPostImage>
+                {/* <img src={val.img} alt="img" /> */}
+              </FeedPostImage>
+              <FeedPostIcons>
+                <div>
+                  <TbMessageCircle2 />
+                </div>
+                <div>
+                  <AiOutlineRetweet />
+                </div>
+                <div>
+                  <AiOutlineHeart />
+                </div>
+                <div>
+                  <MdOutlineIosShare />
+                </div>
+              </FeedPostIcons>
+            </FeedPostRight>
+          </FeedPost>
+        ))}
     </FeedWrapper>
   )
 }

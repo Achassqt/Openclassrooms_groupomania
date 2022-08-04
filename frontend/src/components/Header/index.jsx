@@ -16,7 +16,8 @@ const StyledHeader = styled.header`
   min-height: 53px;
   position: fixed;
   top: 0;
-  width: 565px;
+  width: 587px;
+  box-sizing: border-box;
   border-right: solid 1px ${colors.secondary};
   z-index: 1;
 

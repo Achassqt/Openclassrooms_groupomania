@@ -6,7 +6,7 @@ import Feed from '../../components/Feed'
 // import Search from '../../components/Search'
 import Header from '../../components/Header'
 import { Outlet } from 'react-router-dom'
-// import colors from '../../utils/style/colors'
+import colors from '../../utils/style/colors'
 
 import { useState, useEffect, useContext } from 'react'
 import { Context } from '../../utils/AppContext'
@@ -28,11 +28,16 @@ const StyledMain = styled.main`
 const CenterWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 55%;
+  /* box-sizing: border-box; */
 `
 
 const RightSideWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 45%;
+  border-left: solid 1px ${colors.secondary};
+  /* background-color: BLACK; */
 `
 
 function Home() {
@@ -97,7 +102,7 @@ function Home() {
           <CenterWrapper>
             <Header />
             <CreatePost />
-            <Feed />
+            <Feed usersData={allUsersData} />
           </CenterWrapper>
           <RightSideWrapper>
             {/* <Search /> */}
