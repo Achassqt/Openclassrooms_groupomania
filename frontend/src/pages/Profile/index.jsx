@@ -105,7 +105,7 @@ const ProfileSection = styled.section`
 
   .images {
     .banner-container {
-      height: 200px;
+      height: 230px;
       width: 100%;
       position: relative;
 
@@ -116,6 +116,15 @@ const ProfileSection = styled.section`
         border: 3px solid ${colors.tertiary};
         border-radius: 3px;
         box-sizing: border-box;
+      }
+
+      .image-error {
+        position: absolute;
+        bottom: 3px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        color: #ed0000;
+        z-index: 10;
       }
 
       .edit-banner-container {
@@ -210,6 +219,13 @@ const ProfileSection = styled.section`
       /* margin: -50px 0 0 20px; */
     }
 
+    .image-error {
+      position: absolute;
+      bottom: 5px;
+      right: -200px;
+      color: #ed0000;
+    }
+
     .edit-picture-container {
       /* background-color: red; */
       background-color: ${colors.hoverTertiary}50;
@@ -300,6 +316,13 @@ const ProfileSection = styled.section`
     }
   }
 
+  .pseudo-error {
+    color: #ed0000;
+    position: absolute;
+    bottom: 30%;
+    left: 20px;
+  }
+
   .date {
     margin: 0 20px 30px;
     font-weight: bold;
@@ -308,7 +331,7 @@ const ProfileSection = styled.section`
 `
 
 function Profile() {
-  const { uid, userData } = useContext(Context)
+  const { uid, userData, setGetUserData } = useContext(Context)
   const [hoverStylePicture, setHoverStylePicture] = useState(false)
   const [hoverStyleBanner, setHoverStyleBanner] = useState(false)
   const [pseudo, setPseudo] = useState(userData.pseudo)
@@ -318,8 +341,9 @@ function Profile() {
   const [profilePreview, setProfilePreview] = useState(null)
   const [bannerPreview, setBannerPreview] = useState(null)
 
-  const [imageErrors, setImageErrors] = useState({ type: '', erreur: '' })
-  // const [pseudoErrors, setPseudoErrors] = useState()
+  const [profileErrors, setProfileErrors] = useState({ message: '' })
+  const [bannerErrors, setBannerErrors] = useState({ message: '' })
+  const [pseudoErrors, setPseudoErrors] = useState({ message: '' })
 
   // const [image, setImage] = useState()
 
@@ -327,11 +351,13 @@ function Profile() {
     const file = e.target.files[0]
 
     if (file.size > 5242880) {
-      setImageErrors({ type: 'format', message: 'Taille maximal: 5MB' })
-      return imageErrors
+      setProfileFile(null)
+      setProfilePreview(null)
+      setProfileErrors({ message: "Taille d'image maximal: 5MB" })
+      return profileErrors
     } else {
       setProfileFile(file)
-      setImageErrors({ type: '', message: '' })
+      setProfileErrors({ message: '' })
     }
   }
 
@@ -339,11 +365,13 @@ function Profile() {
     const file = e.target.files[0]
 
     if (file.size > 5242880) {
-      setImageErrors({ type: 'format', message: 'Taille maximal: 5MB' })
-      return imageErrors
+      setBannerFile(null)
+      setBannerPreview(null)
+      setBannerErrors({ message: "Taille d'image maximal: 5MB" })
+      return bannerErrors
     } else {
       setBannerFile(file)
-      setImageErrors({ type: '', message: '' })
+      setBannerErrors({ message: '' })
     }
   }
 
@@ -372,7 +400,7 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (userData.pseudo !== pseudo) {
+    if (userData.pseudo !== pseudo && pseudo.length > 2) {
       await axios({
         method: 'put',
         url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
@@ -382,8 +410,12 @@ function Profile() {
       })
         .then((res) => {
           setPseudo(res.data.pseudo)
+          setPseudoErrors({ message: '' })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          console.log(err)
+          setPseudoErrors({ message: 'Pseudo déjà pris' })
+        })
     }
 
     if (profileFile !== null) {
@@ -396,7 +428,9 @@ function Profile() {
         data: formDataProfile,
       })
         .then(() => {
+          setProfilePreview(null)
           setProfileFile(null)
+          setProfileErrors({ message: '' })
           console.log('Photo modifiée')
         })
         .catch((err) => console.log(err))
@@ -412,11 +446,15 @@ function Profile() {
         data: formDataBanner,
       })
         .then(() => {
+          setBannerPreview(null)
           setBannerFile(null)
+          setBannerErrors({ message: '' })
           console.log('Bannière modifiée')
         })
         .catch((err) => console.log(err))
     }
+
+    setGetUserData(true)
   }
 
   return (
@@ -431,14 +469,24 @@ function Profile() {
             <ButtonPoster
               onClick={() => {
                 setPseudo(userData.pseudo)
+                setProfileFile(null)
                 setProfilePreview(null)
+                setBannerFile(null)
                 setBannerPreview(null)
+                setBannerErrors({})
+                setProfileErrors({ message: '' })
+                setPseudoErrors({ message: '' })
               }}
               type="button"
               className="btn-annuler"
               style={{
                 display:
-                  pseudo !== userData.pseudo || profilePreview || bannerPreview
+                  pseudo !== userData.pseudo ||
+                  profilePreview ||
+                  bannerPreview ||
+                  bannerErrors.message === "Taille d'image maximal: 5MB" ||
+                  profileErrors.message === "Taille d'image maximal: 5MB" ||
+                  pseudoErrors.message === 'Pseudo déjà pris'
                     ? 'block'
                     : 'none',
               }}
@@ -459,13 +507,23 @@ function Profile() {
                 className="banner-container"
               >
                 {bannerPreview ? (
-                  <img src={bannerPreview} className="banner" alt="bannière" />
+                  <>
+                    <img
+                      src={bannerPreview}
+                      className="banner"
+                      alt="bannière"
+                    />
+                    <span className="image-error">{bannerErrors.message}</span>
+                  </>
                 ) : (
-                  <img
-                    className="banner"
-                    src={userData.banner}
-                    alt="bannière"
-                  />
+                  <>
+                    <img
+                      className="banner"
+                      src={userData.banner}
+                      alt="bannière"
+                    />
+                    <span className="image-error">{bannerErrors.message}</span>
+                  </>
                 )}
                 <div
                   style={{ display: hoverStyleBanner ? 'block' : 'none' }}
@@ -491,16 +549,24 @@ function Profile() {
                 onMouseLeave={() => setHoverStyleBanner(false)}
               >
                 {bannerPreview ? (
-                  <img src={bannerPreview} className="banner" alt="bannière" />
+                  <>
+                    <img
+                      src={bannerPreview}
+                      className="banner"
+                      alt="bannière"
+                    />
+                    <span className="image-error">{bannerErrors.message}</span>
+                  </>
                 ) : (
-                  <div
-                    style={{
-                      backgroundColor: userData.banner
-                        ? null
-                        : `${colors.secondary}`,
-                    }}
-                    className="banner"
-                  ></div>
+                  <>
+                    <div
+                      style={{
+                        backgroundColor: `${colors.secondary}`,
+                      }}
+                      className="banner"
+                    ></div>
+                    <span className="image-error">{bannerErrors.message}</span>
+                  </>
                 )}
                 <div
                   style={{ display: hoverStyleBanner ? 'block' : 'none' }}
@@ -528,17 +594,23 @@ function Profile() {
               onMouseLeave={() => setHoverStylePicture(false)}
             >
               {profilePreview ? (
-                <img
-                  className="profile-picture"
-                  src={profilePreview}
-                  alt="pp"
-                />
+                <>
+                  <img
+                    className="profile-picture"
+                    src={profilePreview}
+                    alt="pp"
+                  />
+                  <span className="image-error">{profileErrors.message}</span>
+                </>
               ) : (
-                <img
-                  className="profile-picture"
-                  src={`${userData.imageUrl}`}
-                  alt="pp"
-                />
+                <>
+                  <img
+                    className="profile-picture"
+                    src={`${userData.imageUrl}`}
+                    alt="pp"
+                  />
+                  <span className="image-error">{profileErrors.message}</span>
+                </>
               )}
               <div
                 className="edit-picture-container"
@@ -564,9 +636,13 @@ function Profile() {
           <input
             type="text"
             placeholder="Pseudo"
+            spellCheck={false}
+            minLength={3}
+            maxLength={20}
             onChange={(e) => setPseudo(e.target.value)}
             value={pseudo}
           ></input>
+          <span className="pseudo-error">{pseudoErrors.message}</span>
 
           <span className="date">A rejoint Groupomania en {date}</span>
         </ProfileSection>

@@ -8,6 +8,10 @@ import Header from '../../components/Header'
 import { Outlet } from 'react-router-dom'
 // import colors from '../../utils/style/colors'
 
+import { useState, useEffect, useContext } from 'react'
+import { Context } from '../../utils/AppContext'
+import axios from 'axios'
+
 const HomeWrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -32,22 +36,77 @@ const RightSideWrapper = styled.div`
 `
 
 function Home() {
+  const { uid } = useContext(Context)
+  const [userData, setUserData] = useState({})
+  const [allUsersData, setAllUsersData] = useState({})
+
+  const [getUserData, setGetUserData] = useState(true)
+  const [getAllUsersData, setGetAllUsersData] = useState(true)
+
+  useEffect(() => {
+    if (uid !== null && getUserData) {
+      const getUser = async () => {
+        await axios({
+          method: 'get',
+          url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
+          withCredentials: true,
+        })
+          .then((res) => {
+            console.log(res)
+            setUserData(res.data)
+          })
+          .catch((err) => console.log(err))
+      }
+      getUser()
+      setGetUserData(false)
+    }
+  }, [uid, getUserData])
+
+  useEffect(() => {
+    if (getAllUsersData) {
+      const getAllUsers = async () => {
+        await axios({
+          method: 'get',
+          url: `${process.env.REACT_APP_API_URL}api/user/`,
+          withCredentials: true,
+        })
+          .then((res) => {
+            console.log(res)
+            setAllUsersData(res.data)
+          })
+          .catch((err) => console.log(err))
+      }
+      getAllUsers()
+      setGetAllUsersData(false)
+    }
+  }, [getAllUsersData])
+
   return (
-    <HomeWrapper>
-      <SideBar />
-      <StyledMain>
-        <CenterWrapper>
-          <Header />
-          <CreatePost />
-          <Feed />
-        </CenterWrapper>
-        <RightSideWrapper>
-          {/* <Search /> */}
-          {/* <Widgets /> */}
-        </RightSideWrapper>
-      </StyledMain>
-      <Outlet />
-    </HomeWrapper>
+    <Context.Provider
+      value={{
+        uid,
+        userData,
+        allUsersData,
+        setGetUserData,
+        setGetAllUsersData,
+      }}
+    >
+      <HomeWrapper>
+        <SideBar />
+        <StyledMain>
+          <CenterWrapper>
+            <Header />
+            <CreatePost />
+            <Feed />
+          </CenterWrapper>
+          <RightSideWrapper>
+            {/* <Search /> */}
+            {/* <Widgets /> */}
+          </RightSideWrapper>
+        </StyledMain>
+        <Outlet />
+      </HomeWrapper>
+    </Context.Provider>
   )
 }
 

@@ -27,7 +27,7 @@ exports.updateUser = async (req, res) => {
       {
         $set: {
           pseudo: req.body.pseudo,
-          email: req.body.email,
+          // email: req.body.email,
         },
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }

@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { ButtonPoster } from '../../utils/style/Button.jsx'
 import { Link } from 'react-router-dom'
 import colors from '../../utils/style/colors'
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { Context } from '../../utils/AppContext'
 import axios from 'axios'
 import cookie from 'js-cookie'
@@ -209,6 +209,13 @@ function SideBar() {
   const [modalOpen, setModalOpen] = useState(false)
   // const profilePage = (document.lacation = '/home/page')
   // const [userData, setUserData] = useState({})
+  const [userPseudo, setUserPseudo] = useState()
+  const [userPicture, setUserPicture] = useState()
+
+  useEffect(() => {
+    setUserPseudo(userData.pseudo)
+    setUserPicture(userData.imageUrl)
+  }, [userData.imageUrl, userData.pseudo])
 
   function toggleModal() {
     setModalOpen(!modalOpen)
@@ -283,10 +290,10 @@ function SideBar() {
                   // src={
                   //   profilePage ? `../${userData.imageUrl}` : userData.imageUrl
                   // }
-                  src={userData.imageUrl}
+                  src={userPicture}
                   alt="pp"
                 />
-                <p>{userData.pseudo}</p>
+                <p>{userPseudo}</p>
               </div>
               <IoEllipsisHorizontalSharp className="ellipsis" />
             </div>

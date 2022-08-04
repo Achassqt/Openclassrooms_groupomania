@@ -19,7 +19,6 @@ const GlobalStyle = createGlobalStyle`
 `
 const App = () => {
   const [uid, setUid] = useState(null)
-  const [userData, setUserData] = useState({})
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -37,27 +36,9 @@ const App = () => {
     fetchToken()
   }, [uid])
 
-  useEffect(() => {
-    if (uid !== null) {
-      const getUser = async () => {
-        await axios({
-          method: 'get',
-          url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
-          withCredentials: true,
-        })
-          .then((res) => {
-            console.log(res)
-            setUserData(res.data)
-          })
-          .catch((err) => console.log(err))
-      }
-      getUser()
-    }
-  }, [uid])
-
   return (
     <BrowserRouter>
-      <Context.Provider value={{ uid, userData }}>
+      <Context.Provider value={{ uid }}>
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<Welcome />}>
