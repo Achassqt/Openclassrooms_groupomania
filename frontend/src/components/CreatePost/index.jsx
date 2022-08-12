@@ -9,6 +9,8 @@ const CreatePostWrapper = styled.div`
   padding-bottom: 4px;
   padding-top: 8px;
   border-bottom: solid 1px ${colors.secondary};
+  border-right: solid 1px ${colors.secondary};
+  border-left: solid 1px ${colors.secondary};
 `
 
 const CreatePostLeft = styled.div`

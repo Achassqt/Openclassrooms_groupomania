@@ -32,7 +32,7 @@ const SideBarContent = styled.nav`
   position: fixed;
   top: 0;
   bottom: 0;
-  border-right: solid 1px ${colors.secondary};
+  /* border-right: solid 1px ${colors.secondary}; */
 `
 
 const SideBarTop = styled.section`
@@ -204,8 +204,8 @@ const SideBarUser = styled.div`
   }
 `
 
-function SideBar() {
-  const { uid, userData } = useContext(Context)
+function SideBar({ userData }) {
+  const { uid } = useContext(Context)
   const [modalOpen, setModalOpen] = useState(false)
   // const profilePage = (document.lacation = '/home/page')
   // const [userData, setUserData] = useState({})

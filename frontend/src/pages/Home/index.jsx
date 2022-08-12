@@ -28,25 +28,23 @@ const StyledMain = styled.main`
 const CenterWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 55%;
+  width: 600px;
   /* box-sizing: border-box; */
 `
 
 const RightSideWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 45%;
-  border-left: solid 1px ${colors.secondary};
+  /* max-width: 45%; */
+  /* border-left: solid 1px ${colors.secondary}; */
   /* background-color: BLACK; */
 `
 
 function Home() {
   const { uid } = useContext(Context)
-  const [userData, setUserData] = useState({})
-  const [allUsersData, setAllUsersData] = useState({})
 
+  const [userData, setUserData] = useState({})
   const [getUserData, setGetUserData] = useState(true)
-  const [getAllUsersData, setGetAllUsersData] = useState(true)
 
   useEffect(() => {
     if (uid !== null && getUserData) {
@@ -67,42 +65,15 @@ function Home() {
     }
   }, [uid, getUserData])
 
-  useEffect(() => {
-    if (getAllUsersData) {
-      const getAllUsers = async () => {
-        await axios({
-          method: 'get',
-          url: `${process.env.REACT_APP_API_URL}api/user/`,
-          withCredentials: true,
-        })
-          .then((res) => {
-            console.log(res)
-            setAllUsersData(res.data)
-          })
-          .catch((err) => console.log(err))
-      }
-      getAllUsers()
-      setGetAllUsersData(false)
-    }
-  }, [getAllUsersData])
-
   return (
-    <Context.Provider
-      value={{
-        uid,
-        userData,
-        allUsersData,
-        setGetUserData,
-        setGetAllUsersData,
-      }}
-    >
+    <Context.Provider value={{ uid, userData, setGetUserData }}>
       <HomeWrapper>
-        <SideBar />
+        <SideBar userData={userData} />
         <StyledMain>
           <CenterWrapper>
             <Header />
             <CreatePost />
-            <Feed usersData={allUsersData} />
+            <Feed userData={userData} />
           </CenterWrapper>
           <RightSideWrapper>
             {/* <Search /> */}
