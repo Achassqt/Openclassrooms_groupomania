@@ -10,6 +10,7 @@ import { ButtonPoster } from '../../utils/style/Button'
 import { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { Context } from '../../utils/AppContext'
+import CreateComment from '../CreateComment'
 
 const FeedPost = styled.li`
   display: flex;
@@ -28,6 +29,7 @@ const FeedPostLeft = styled.div`
     height: 48px;
     width: 48px;
     border-radius: 50%;
+    object-fit: cover;
   }
 `
 
@@ -36,7 +38,7 @@ const FeedPostRight = styled.div`
   flex-direction: column;
   flex: 1;
   padding-bottom: 12px;
-  max-width: 505px;
+  /* max-width: 505px; */
 `
 
 const FeedPostHeader = styled.div`
@@ -50,6 +52,15 @@ const FeedPostHeader = styled.div`
   /* height: 22px; */
 
   .header-left {
+    display: flex;
+
+    img {
+      margin-right: 13px;
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+    }
+
     .user-pseudo {
       font-weight: 700;
     }
@@ -228,9 +239,10 @@ const FeedPostImage = styled.div`
     border-radius: 16px;
     min-width: 400px;
     max-width: 505px;
+    max-height: 505px;
     height: auto;
     outline: solid ${colors.secondary} 1px;
-    /* object-fit: cover; */
+    object-fit: cover;
   }
 `
 
@@ -242,6 +254,7 @@ const FeedPostIcons = styled.div`
   margin-top: 15px;
   width: 170px;
   color: ${colors.secondary};
+  box-sizing: border-box;
 
   .post-icon-container {
     display: flex;
@@ -275,19 +288,28 @@ const FeedPostIcons = styled.div`
 
 const CommentsContainer = styled.ul`
   margin: 0;
-  padding: 0;
   border-right: solid 1px ${colors.secondary};
   border-left: solid 1px ${colors.secondary};
-  border-bottom: double 2px ${colors.secondary};
-  padding: 12px 16px;
-  padding-bottom: 0;
+  border-bottom: double 3px ${colors.secondary};
+  padding: 16px;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  & > :first-child {
-    padding-top: 0;
-  }
-
-  & > :last-child {
+  /* & > :last-child {
     border: none;
+  } */
+
+  .close-comments {
+    color: ${colors.primary};
+    margin-top: 16px;
+
+    cursor: pointer;
+
+    :hover {
+      color: ${colors.hoverPrimary};
+    }
   }
 `
 
@@ -375,87 +397,178 @@ function Post({ post }) {
   return (
     <>
       <FeedPost key={post._id} style={{ borderBottom: showComments && 'none' }}>
-        <FeedPostLeft>
-          <img
-            src={
-              !isEmpty(usersData[0]) &&
-              usersData
-                .map((user) => {
-                  if (user._id === post.posterId) return user.imageUrl
-                  else return null
-                })
-                .join('')
-            }
-            alt="poster-pp"
-          />
-        </FeedPostLeft>
-        <FeedPostRight>
+        {showComments === false && (
+          <FeedPostLeft>
+            <img
+              src={
+                !isEmpty(usersData[0]) &&
+                usersData
+                  .map((user) => {
+                    if (user._id === post.posterId) return user.imageUrl
+                    else return null
+                  })
+                  .join('')
+              }
+              alt="poster-pp"
+            />
+          </FeedPostLeft>
+        )}
+        <FeedPostRight
+          style={{
+            width: showComments && '100%',
+            paddingBottom: showComments && '0',
+          }}
+        >
           <FeedPostHeader>
             <div className="header-left">
-              <span className="user-pseudo">
-                {!isEmpty(usersData[0]) &&
-                  usersData.map((user) => {
-                    if (user._id === post.posterId) return user.pseudo
-                    else return null
-                  })}
-              </span>
-              <span className="post-created-at">
-                {dateParser(post.createdAt)}
-              </span>
+              {showComments && (
+                <img
+                  src={
+                    !isEmpty(usersData[0]) &&
+                    usersData
+                      .map((user) => {
+                        if (user._id === post.posterId) return user.imageUrl
+                        else return null
+                      })
+                      .join('')
+                  }
+                  alt="poster-pp"
+                />
+              )}
+              <div
+                style={{
+                  display: showComments && 'flex',
+                  flexDirection: showComments && 'column',
+                  justifyContent: showComments && 'space-around',
+                }}
+              >
+                <span className="user-pseudo">
+                  {!isEmpty(usersData[0]) &&
+                    usersData.map((user) => {
+                      if (user._id === post.posterId) return user.pseudo
+                      else return null
+                    })}
+                </span>
+                <span
+                  style={{ margin: showComments && '0' }}
+                  className="post-created-at"
+                >
+                  {dateParser(post.createdAt)}
+                </span>
+              </div>
             </div>
             {uid === post.posterId && (
-              <Modal
-                editPost={editPost}
-                setEditPost={setEditPost}
-                deletePost={deletePost}
-              />
+              <div
+                style={{
+                  position: showComments && 'relative',
+                  top: showComments && '-11px',
+                }}
+              >
+                <Modal
+                  editPost={editPost}
+                  setEditPost={setEditPost}
+                  deletePost={deletePost}
+                  message={post.message}
+                />
+              </div>
             )}
           </FeedPostHeader>
           <FeedPostText>
-            {editPost === false ? (
-              <p className="post-text">{post.message}</p>
-            ) : (
-              <textarea
-                onChange={(e) => setTextEdit(e.target.value)}
-                defaultValue={post.message}
-                // contentEditable
-                spellCheck="false"
-                className="edit-text"
-              />
+            {editPost === false && (
+              <p
+                style={{ fontSize: showComments && '23px' }}
+                className="post-text"
+              >
+                {post.message}
+              </p>
             )}
+            <textarea
+              onChange={(e) => setTextEdit(e.target.value)}
+              defaultValue={post.message}
+              style={{
+                transform: editPost ? 'scale(1)' : 'scale(0)',
+                position: editPost === false && 'absolute',
+              }}
+              spellCheck="false"
+              className="edit-text"
+            />
             {editPost && (
               <ButtonPoster onClick={handleSubmit} className="edit-btn">
                 Modifier
               </ButtonPoster>
             )}
           </FeedPostText>
-          <FeedPostImage>
-            <img src={post.imageUrl} alt="img" />
-          </FeedPostImage>
-          <FeedPostIcons>
-            <div
-              onClick={() => setShowComments(!showComments)}
-              className="post-icon-container"
-            >
-              <div className="icon">
-                <TbMessageCircle2 />
+          {post.imageUrl && (
+            <FeedPostImage style={{ justifyContent: showComments && 'center' }}>
+              <img
+                src={post.imageUrl}
+                style={{
+                  maxWidth: showComments && '600px',
+                  maxHeight: showComments && 'auto',
+                }}
+                alt="img"
+              />
+            </FeedPostImage>
+          )}
+          {showComments === false ? (
+            <FeedPostIcons>
+              <div
+                onClick={() => setShowComments(!showComments)}
+                className="post-icon-container"
+              >
+                <div className="icon">
+                  <TbMessageCircle2 />
+                </div>
+                <span>{post.comments.length}</span>
               </div>
-              <span>{post.comments.length}</span>
-            </div>
-            <Like post={post} />
-          </FeedPostIcons>
+              <Like post={post} />
+            </FeedPostIcons>
+          ) : (
+            <FeedPostIcons
+              style={{
+                width: '100%',
+                justifyContent: 'space-evenly',
+                margin: '0',
+                padding: '10px',
+                borderTop: `1px solid ${colors.secondary}`,
+                borderBottom: `1px solid ${colors.secondary}`,
+                marginTop: '20px',
+              }}
+            >
+              <div
+                onClick={() => setShowComments(!showComments)}
+                className="post-icon-container"
+              >
+                <div className="icon">
+                  <TbMessageCircle2 />
+                </div>
+                <span>{post.comments.length}</span>
+              </div>
+              <Like post={post} />
+            </FeedPostIcons>
+          )}
         </FeedPostRight>
       </FeedPost>
-      <CommentsContainer
-        style={{ borderBottom: showComments === false && 'none' }}
-      >
-        {showComments &&
-          post.comments.map((comment) => {
-            return (
-              <Comment post={post} usersData={usersData} comment={comment} />
-            )
-          })}
-      </CommentsContainer>
+      {showComments && (
+        <>
+          <CreateComment post={post} />
+          <CommentsContainer
+            style={{ borderBottom: showComments === false && 'none' }}
+          >
+            {post.comments.map((comment) => {
+              return (
+                <Comment post={post} usersData={usersData} comment={comment} />
+              )
+            })}
+            <span
+              onClick={() => setShowComments(false)}
+              className="close-comments"
+            >
+              Fermer
+            </span>
+          </CommentsContainer>
+        </>
+      )}
     </>
   )
 }

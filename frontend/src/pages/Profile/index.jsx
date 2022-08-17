@@ -213,6 +213,7 @@ const ProfileSection = styled.section`
       width: 100%;
       border-radius: 50%;
       outline: 2px solid ${colors.tertiary};
+      object-fit: cover;
       /* position: relative;
         bottom: 50px;
         left: 15px; */

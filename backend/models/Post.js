@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema(
     message: {
       type: String,
       trim: true,
-      maxlength: 200,
+      maxlength: 400,
     },
     imageUrl: {
       type: String,

@@ -46,6 +46,8 @@ function Home() {
   const [userData, setUserData] = useState({})
   const [getUserData, setGetUserData] = useState(true)
 
+  const [getPosts, setGetPosts] = useState(true)
+
   useEffect(() => {
     if (uid !== null && getUserData) {
       const getUser = async () => {
@@ -72,8 +74,12 @@ function Home() {
         <StyledMain>
           <CenterWrapper>
             <Header />
-            <CreatePost />
-            <Feed userData={userData} />
+            <CreatePost setGetPosts={setGetPosts} />
+            <Feed
+              userData={userData}
+              getPosts={getPosts}
+              setGetPosts={setGetPosts}
+            />
           </CenterWrapper>
           <RightSideWrapper>
             {/* <Search /> */}

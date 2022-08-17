@@ -14,10 +14,10 @@ const FeedWrapper = styled.ul`
   /* box-sizing: border-box; */
 `
 
-function Feed() {
-  const { uid } = useContext(Context)
+function Feed({ getPosts, setGetPosts }) {
+  const { uid, userData } = useContext(Context)
   const [posts, setPosts] = useState([])
-  const [getPosts, setGetPosts] = useState(true)
+  // const [getPosts, setGetPosts] = useState(true)
 
   useEffect(() => {
     axios({
@@ -30,7 +30,7 @@ function Feed() {
         setGetPosts(false)
       })
       .catch((err) => console.log(err))
-  }, [getPosts])
+  }, [getPosts, setGetPosts])
 
   const isEmpty = (value) => {
     return (
@@ -42,7 +42,7 @@ function Feed() {
   }
 
   return (
-    <Context.Provider value={{ uid, setGetPosts }}>
+    <Context.Provider value={{ uid, setGetPosts, userData }}>
       <FeedWrapper>
         {!isEmpty(posts[0]) &&
           posts.map((post, index) => {

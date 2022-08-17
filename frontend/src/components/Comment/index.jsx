@@ -9,6 +9,7 @@ import axios from 'axios'
 
 const CommentContainer = styled.li`
   display: flex;
+  width: 100%;
   /* padding: 12px 16px; */
   /* padding-top: 12px; */
   padding-top: 12px;
@@ -23,6 +24,7 @@ const CommentContainer = styled.li`
       height: 48px;
       width: 48px;
       border-radius: 50%;
+      object-fit: cover;
     }
   }
 

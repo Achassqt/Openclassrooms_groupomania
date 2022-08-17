@@ -1,140 +1,50 @@
-import { BsEmojiSmile, BsImage } from 'react-icons/bs'
-import styled from 'styled-components'
-import white from '../../assets/white.png'
-import { ButtonPoster } from '../../utils/style/Button.jsx'
-import colors from '../../utils/style/colors'
+// import styled from 'styled-components'
 
-const CreatePostWrapper = styled.div`
-  display: flex;
-  padding-bottom: 4px;
-  padding-top: 8px;
-  border-bottom: solid 1px ${colors.secondary};
-  border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary};
-`
+import axios from 'axios'
+import { useContext, useState } from 'react'
+import { Context } from '../../utils/AppContext'
+import FormPost from '../FormPost'
 
-const CreatePostLeft = styled.div`
-  margin-right: 12px;
-  padding: 0 0 0 16px;
+function CreatePost({ setGetPosts }) {
+  const { uid } = useContext(Context)
 
-  img {
-    height: 48px;
-    width: 48px;
-    border-radius: 50%;
-  }
-`
+  const postForm = true
 
-const CreatePostRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-between; */
-  width: 100%;
-  padding-right: 16px;
+  const [message, setMessage] = useState(null)
 
-  .tweet-box-area {
-    position: relative;
-    scrollbar-width: none;
-    color: white;
-    max-width: 501px;
-    margin-left: 5px;
-    /* min-height: 130px; */
-    max-height: 170px;
-    overflow-y: auto;
+  const [postPicture, setPostPicture] = useState(null)
+  const [file, setFile] = useState()
 
-    &::-webkit-scrollbar {
-      width: 0;
-    }
-    .placeholder {
-      position: absolute;
-      height: inherit;
-      color: ${colors.secondary};
-      pointer-events: none;
-      font-size: 20px;
-      top: 13px;
-      /* padding: 0 10px; */
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
-    .input-editable {
-      outline: 1px solid white;
-      padding: 13px 0;
-      /* padding-left: 10px; */
-      height: inherit;
-      font-size: 20px;
-      outline: none;
-      /* width: 100%; */
+    if (message || postPicture) {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('posterId', uid)
+      formData.append('message', message)
 
-      /* &:focus {
-        background-color: #202327;
-        border-radius: 10px;
-      } */
+      axios({
+        method: 'post',
+        url: `${process.env.REACT_APP_API_URL}api/post/`,
+        data: formData,
+      })
+        .then(() => {
+          setGetPosts(true)
+        })
+        .catch((err) => console.log(err))
     }
   }
-`
-
-const CreatePostBottom = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
-  margin-top: 12px;
-
-  div {
-    color: ${colors.primary};
-    font-size: 20px;
-    display: flex;
-    justify-content: space-between;
-
-    & > svg {
-      padding: 0 8px;
-    }
-  }
-
-  ${ButtonPoster} {
-    width: 91px;
-    height: 36px;
-    font-size: 16px;
-    font-weight: 700;
-  }
-`
-
-function CreatePost() {
-  // const placeHolder = document.querySelector('.placeholder')
-  // const input = document.querySelector('.input-editable')
-  // function displayNone() {
-  //   const inputLength = input.textContent.length
-  //   if (inputLength > 0) {
-  //     placeHolder.style.display = 'none'
-  //   } else {
-  //     placeHolder.style.display = 'block'
-  //   }
-  //   // placeHolder.style.display = 'none'
-  // }
 
   return (
-    <CreatePostWrapper>
-      <CreatePostLeft>
-        <img src={white} alt="pp" />
-      </CreatePostLeft>
-      <CreatePostRight>
-        {/* <input type="text" placeholder="Quoi de neuf ?"></input> */}
-        <div className="tweet-box-area">
-          <span className="placeholder">Quoi de neuf ?</span>
-          <div
-            className="input-editable"
-            contentEditable="true"
-            spellcheck="false"
-            // onKeyUp={() => displayNone()}
-          ></div>
-        </div>
-        <CreatePostBottom>
-          <div>
-            <BsImage />
-            <BsEmojiSmile />
-          </div>
-          <ButtonPoster>Poster</ButtonPoster>
-        </CreatePostBottom>
-      </CreatePostRight>
-    </CreatePostWrapper>
+    <FormPost
+      postHandleSubmit={handleSubmit}
+      setMessage={setMessage}
+      postPicture={postPicture}
+      setPostPicture={setPostPicture}
+      setFile={setFile}
+      postForm={postForm}
+    />
   )
 }
 

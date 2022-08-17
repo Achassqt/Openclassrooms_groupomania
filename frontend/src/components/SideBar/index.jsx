@@ -98,11 +98,11 @@ const SideBarUser = styled.div`
   .modal-container {
     background-color: ${colors.tertiary};
     position: absolute;
-    top: -64px;
+    top: -90px;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 290px;
-    height: 80px;
+    /* height: 120px; */
     border-radius: 12px;
     padding: 12px 0;
     color: white;
@@ -118,6 +118,7 @@ const SideBarUser = styled.div`
       left: -6px;
       top: -4px;
       margin-left: 16px;
+      margin-bottom: 4px;
 
       :hover {
         background-color: ${colors.hoverTertiary};
@@ -133,6 +134,16 @@ const SideBarUser = styled.div`
       :hover {
         background-color: ${colors.hoverTertiary};
         color: ${colors.secondary};
+      }
+    }
+
+    .delete {
+      padding: 16px;
+      cursor: pointer;
+
+      :hover {
+        background-color: ${colors.hoverTertiary};
+        color: ${colors.primary};
       }
     }
 
@@ -189,6 +200,7 @@ const SideBarUser = styled.div`
         width: 40px;
         height: 40px;
         border-radius: 50%;
+        object-fit: cover;
       }
 
       & > p {
@@ -281,18 +293,13 @@ function SideBar({ userData }) {
               <span onClick={logout} className="logout">
                 Se déconnecter
               </span>
+              <span className="delete">Supprimer mon compte</span>
               <div className="square"></div>
               <div className="cache-square"></div>
             </div>
             <div onClick={toggleModal} className="side-bar-user">
               <div className="left-content">
-                <img
-                  // src={
-                  //   profilePage ? `../${userData.imageUrl}` : userData.imageUrl
-                  // }
-                  src={userPicture}
-                  alt="pp"
-                />
+                <img src={userPicture} alt="pp" />
                 <p>{userPseudo}</p>
               </div>
               <IoEllipsisHorizontalSharp className="ellipsis" />
