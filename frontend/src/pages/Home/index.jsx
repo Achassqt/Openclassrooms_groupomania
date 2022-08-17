@@ -46,7 +46,10 @@ function Home() {
   const [userData, setUserData] = useState({})
   const [getUserData, setGetUserData] = useState(true)
 
+  const [posts, setPosts] = useState([])
   const [getPosts, setGetPosts] = useState(true)
+
+  const [userDeleted, setUserDeleted] = useState(false)
 
   useEffect(() => {
     if (uid !== null && getUserData) {
@@ -68,9 +71,11 @@ function Home() {
   }, [uid, getUserData])
 
   return (
-    <Context.Provider value={{ uid, userData, setGetUserData }}>
+    <Context.Provider
+      value={{ uid, userData, setGetUserData, userDeleted, setUserDeleted }}
+    >
       <HomeWrapper>
-        <SideBar userData={userData} />
+        <SideBar userData={userData} posts={posts} />
         <StyledMain>
           <CenterWrapper>
             <Header />
@@ -79,6 +84,8 @@ function Home() {
               userData={userData}
               getPosts={getPosts}
               setGetPosts={setGetPosts}
+              posts={posts}
+              setPosts={setPosts}
             />
           </CenterWrapper>
           <RightSideWrapper>

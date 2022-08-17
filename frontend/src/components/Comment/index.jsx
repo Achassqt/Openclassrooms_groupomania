@@ -6,6 +6,7 @@ import Modal from '../../utils/style/Modal'
 import { useContext, useState } from 'react'
 import { Context } from '../../utils/AppContext'
 import axios from 'axios'
+import { useEffect } from 'react'
 
 const CommentContainer = styled.li`
   display: flex;
@@ -71,8 +72,30 @@ const CommentText = styled.div`
 `
 
 function Comments({ post, usersData, comment }) {
-  const { uid, setGetPosts } = useContext(Context)
+  const { uid, setGetPosts, userDeleted, setUserDeleted } = useContext(Context)
   const [editComment, setEditComment] = useState(false)
+
+  // const [oldUser, setOldUser] = useState(false)
+
+  useEffect(() => {
+    if (userDeleted === true && comment.commenterId === uid) {
+      axios({
+        method: 'patch',
+        url: `${process.env.REACT_APP_API_URL}api/post/delete-comment/${post._id}`,
+        data: {
+          commentId: comment._id,
+        },
+      })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => console.log(err))
+    }
+  }, [userDeleted])
+
+  // useEffect(() => {
+  //   oldUser && deleteComment()
+  // }, [oldUser])
 
   const deleteComment = () => {
     axios({
@@ -112,7 +135,7 @@ function Comments({ post, usersData, comment }) {
   }
 
   return (
-    <CommentContainer>
+    <CommentContainer id="test">
       <div className="left-part">
         <img
           src={

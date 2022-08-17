@@ -323,6 +323,8 @@ function Post({ post }) {
   const [editPost, setEditPost] = useState(false)
   const [textEdit, setTextEdit] = useState(null)
 
+  const [comments, setComments] = useState([post.comments])
+
   const handleSubmit = (e) => {
     e.preventDefault()
 
