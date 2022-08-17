@@ -72,30 +72,34 @@ const CommentText = styled.div`
 `
 
 function Comments({ post, usersData, comment }) {
-  const { uid, setGetPosts, userDeleted, setUserDeleted } = useContext(Context)
+  const { uid, setGetPosts, userDeleted } = useContext(Context)
   const [editComment, setEditComment] = useState(false)
 
-  // const [oldUser, setOldUser] = useState(false)
+  const [oldUser, setOldUser] = useState(false)
 
   useEffect(() => {
-    if (userDeleted === true && comment.commenterId === uid) {
-      axios({
-        method: 'patch',
-        url: `${process.env.REACT_APP_API_URL}api/post/delete-comment/${post._id}`,
-        data: {
-          commentId: comment._id,
-        },
-      })
-        .then((res) => {
-          console.log(res)
+    if (userDeleted) {
+      const getUser = async () => {
+        axios({
+          method: 'get',
+          url: `${process.env.REACT_APP_API_URL}api/user/${comment.commenterId}`,
+          withCredentials: true,
         })
-        .catch((err) => console.log(err))
+          .then((res) => {
+            console.log(res)
+            // si l'utilisateur n'existe pas on change l'état de OldUser si non on stock les informations
+            res.data === '' && setOldUser(true)
+          })
+          .catch((err) => console.log(err))
+      }
+      getUser()
     }
-  }, [userDeleted])
+  }, [comment.commenterId, userDeleted])
 
-  // useEffect(() => {
-  //   oldUser && deleteComment()
-  // }, [oldUser])
+  // useEffect qui supprime les commentaires d'un utilisateur supprimé
+  useEffect(() => {
+    oldUser && deleteComment()
+  }, [oldUser])
 
   const deleteComment = () => {
     axios({

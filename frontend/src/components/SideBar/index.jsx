@@ -217,17 +217,13 @@ const SideBarUser = styled.div`
 `
 
 function SideBar({ userData, posts }) {
-  const { uid } = useContext(Context)
+  const { uid, setUserDeleted } = useContext(Context)
   const [modalOpen, setModalOpen] = useState(false)
-  // const profilePage = (document.lacation = '/home/page')
-  // const [userData, setUserData] = useState({})
+
   const [userPseudo, setUserPseudo] = useState()
   const [userPicture, setUserPicture] = useState()
 
   const userPosts = posts.filter((post) => post.posterId === uid)
-  // const userComments = posts.comments.filter(
-  //   (comment) => comment.commenterId === uid
-  // )
 
   useEffect(() => {
     setUserPseudo(userData.pseudo)
@@ -254,22 +250,6 @@ function SideBar({ userData, posts }) {
     window.location = '/'
   }
 
-  // const supprAllUserComments = () => {
-  //   userPosts.map((post) => {
-  //     userComments.map((comment) => {
-  //       axios({
-  //         method: 'patch',
-  //         url: `${process.env.REACT_APP_API_URL}api/post/delete-comment/${post._id}`,
-  //         data: {
-  //           commentId: comment._id,
-  //         },
-  //       })
-  //         .then((res) => console.log(res))
-  //         .catch((err) => console.log(err))
-  //     })
-  //   })
-  // }
-
   const supprAllUserPosts = () => {
     userPosts.map((post) => {
       axios({
@@ -283,7 +263,7 @@ function SideBar({ userData, posts }) {
   }
 
   const suppr = async () => {
-    // supprAllUserComments()
+    setUserDeleted(true)
     supprAllUserPosts()
     await axios({
       method: 'delete',
@@ -293,7 +273,7 @@ function SideBar({ userData, posts }) {
       .then(() => removeCookie('jwt'))
       .catch((err) => console.log(err))
 
-    // window.location = '/'
+    window.location = '/'
   }
 
   return (
