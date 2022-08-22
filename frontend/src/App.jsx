@@ -19,6 +19,8 @@ const GlobalStyle = createGlobalStyle`
 `
 const App = () => {
   const [uid, setUid] = useState(null)
+  const [userRole, setUserRole] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -29,7 +31,8 @@ const App = () => {
       })
         .then((res) => {
           console.log(res)
-          setUid(res.data)
+          setUid(res.data.userId)
+          setUserRole(res.data.userRole)
         })
         .catch((err) => console.log('no token'))
     }
@@ -38,7 +41,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Context.Provider value={{ uid }}>
+      <Context.Provider value={{ uid, userRole, isLoading, setIsLoading }}>
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<Welcome />}>

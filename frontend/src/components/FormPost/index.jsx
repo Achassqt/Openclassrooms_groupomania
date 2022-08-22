@@ -4,7 +4,7 @@ import { BsImage } from 'react-icons/bs'
 import { IoCloseOutline } from 'react-icons/io5'
 import colors from '../../utils/style/colors'
 
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { Context } from '../../utils/AppContext.js'
 
 const CreatePostWrapper = styled.div`
@@ -221,6 +221,15 @@ function FormPost({
     }
   }
 
+  const textFocus = useRef(null)
+
+  useEffect(() => {
+    if (createPost === true) {
+      textFocus.current.value = ''
+      textFocus.current.focus()
+    }
+  }, [createPost])
+
   return (
     <CreatePostWrapper style={{ padding: commentForm && '12px 0' }}>
       <CreatePostLeft
@@ -250,8 +259,8 @@ function FormPost({
         <p
           onClick={() => {
             setCreatePost(true)
-            document.querySelector('.post-text').focus()
-            document.querySelector('.post-text').value = ''
+            // document.querySelector('.post-text').focus()
+            // document.querySelector('.post-text').value = ''
             if (commentForm) {
               setCommentForm(false)
               setIsActive(true)
@@ -266,6 +275,7 @@ function FormPost({
           {postForm ? 'Quoi de neuf ?' : 'Poster votre réponse.'}
         </p>
         <textarea
+          ref={textFocus}
           onChange={(e) => setMessage(e.target.value)}
           style={{
             transform: createPost ? 'scale(1)' : 'scale(0)',

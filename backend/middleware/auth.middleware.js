@@ -10,9 +10,9 @@ exports.checkUser = (req, res, next) => {
         res.cookie("jwt", "", { maxAge: 1 });
         next();
       } else {
-        let user = await User.findById(decodedToken.id);
+        let user = await User.findById(decodedToken.userId);
         res.locals.user = user;
-        console.log(user);
+        // console.log(user);
         next();
       }
     });
@@ -22,15 +22,17 @@ exports.checkUser = (req, res, next) => {
   }
 };
 
-exports.requireAuth = (req, res, next) => {
+exports.getToken = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (err, decodedToken) => {
+      const userId = decodedToken.userId;
+      const userRole = decodedToken.userRole;
       if (err) {
         console.log(err);
         res.send(200).json("no token");
       } else {
-        console.log(decodedToken.id);
+        console.log({ userId, userRole });
         next();
       }
     });

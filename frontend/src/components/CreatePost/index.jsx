@@ -28,6 +28,7 @@ function CreatePost({ setGetPosts }) {
         method: 'post',
         url: `${process.env.REACT_APP_API_URL}api/post/`,
         data: formData,
+        withCredentials: true,
       })
         .then(() => {
           setGetPosts(true)

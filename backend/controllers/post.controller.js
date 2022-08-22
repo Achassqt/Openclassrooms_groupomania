@@ -4,7 +4,6 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs");
 
 exports.createPost = async (req, res) => {
-  // console.log(req.body);
   const newPost = new Post(
     req.file
       ? {
@@ -20,6 +19,14 @@ exports.createPost = async (req, res) => {
           comments: [],
         }
   );
+
+  // vérification utilisateur
+  if (
+    res.locals.user === null ||
+    res.locals.user._id.valueOf() !== newPost.posterId
+  ) {
+    return res.status(401).json({ error: "Non autorisé" });
+  }
 
   try {
     const post = await newPost.save();
@@ -80,14 +87,22 @@ exports.updatePost = (req, res) => {
           }
         : { ...req.body };
 
+      console.log(res.locals.user.role);
       // Mise à jour du post
-      Post.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: { ...postObject } },
-        { new: true }
-      )
-        .then((post) => res.status(200).json(post))
-        .catch((err) => res.status(400).json({ err }));
+      if (
+        post.posterId === res.locals.user._id.valueOf() ||
+        res.locals.user.role === "admin"
+      ) {
+        Post.findOneAndUpdate(
+          { _id: req.params.id },
+          { $set: { ...postObject } },
+          { new: true }
+        )
+          .then((post) => res.status(200).json(post))
+          .catch((err) => res.status(400).json({ err }));
+      } else {
+        res.status(401).json({ error: "Non autorisé" });
+      }
     })
     .catch((err) => res.status(500).json(err));
 };
@@ -96,18 +111,27 @@ exports.deletePost = (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Id unknown : " + req.params.id);
 
+  console.log(res.locals.user);
+
   Post.findOne({ _id: req.params.id })
     .then((post) => {
-      if (post.imageUrl) {
-        const filename = post.imageUrl.split("/uploads/images/posts")[1];
-        fs.unlink(`uploads/images/posts/${filename}`, (err) => {
-          if (err) throw err;
+      if (
+        post.posterId === res.locals.user._id.valueOf() ||
+        res.locals.user.role === "admin"
+      ) {
+        if (post.imageUrl) {
+          const filename = post.imageUrl.split("/uploads/images/posts")[1];
+          fs.unlink(`uploads/images/posts/${filename}`, (err) => {
+            if (err) throw err;
+          });
+        }
+        Post.findByIdAndRemove(req.params.id, (err, docs) => {
+          if (!err) res.send(docs);
+          else console.log("Delete error : " + err);
         });
+      } else {
+        res.status(401).json({ error: "Non autorisé" });
       }
-      Post.findByIdAndRemove(req.params.id, (err, docs) => {
-        if (!err) res.send(docs);
-        else console.log("Delete error : " + err);
-      });
     })
     .catch((err) => res.status(500).json(err));
 };
@@ -184,6 +208,10 @@ exports.commentPost = (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Id unknown : " + req.params.id);
 
+  if (res.locals.user === null) {
+    return res.status(401).json({ error: "Non autorisé" });
+  }
+
   try {
     return Post.findByIdAndUpdate(
       req.params.id,
@@ -204,57 +232,72 @@ exports.commentPost = (req, res) => {
       }
     );
   } catch (err) {
-    return res.status(400).send(err);
+    return res.status(500).json(err);
   }
 };
 
-exports.editCommentPost = (req, res) => {
-  if (!ObjectId.isValid(req.params.id))
-    return res.status(400).send("Id unknown : " + req.params.id);
+// exports.editCommentPost = (req, res) => {
+//   if (!ObjectId.isValid(req.params.id))
+//     return res.status(400).send("Id unknown : " + req.params.id);
 
-  try {
-    return Post.findById(req.params.id, (err, docs) => {
-      const theComment = docs.comments.find((comment) =>
-        comment._id.equals(req.body.commentId)
-      );
+//   try {
+//     return Post.findById(req.params.id, (err, docs) => {
+//       const theComment = docs.comments.find((comment) =>
+//         comment._id.equals(req.body.commentId)
+//       );
 
-      if (!theComment) {
-        return res.status(404).send("Comment not found");
-      } else {
-        theComment.text = req.body.text;
-      }
+//       if (!theComment) {
+//         return res.status(404).send("Comment not found");
+//       } else {
+//         if (
+//           theComment.commenterId === res.locals.user._id.valueOf() ||
+//           res.locals.user.role === "admin"
+//         ) {
+//           theComment.text = req.body.text;
+//         }
+//       }
 
-      return docs.save((err) => {
-        if (!err) return res.status(200).send(docs);
-        return res.status(500).send(err);
-      });
-    });
-  } catch (err) {
-    return res.status(400).send(err);
-  }
-};
+//       return docs.save((err) => {
+//         if (!err) return res.status(200).send(docs);
+//         return res.status(500).send(err);
+//       });
+//     });
+//   } catch (err) {
+//     return res.status(400).send(err);
+//   }
+// };
 
 exports.deleteCommentPost = (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Id unknown : " + req.params.id);
 
-  try {
-    return Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        $pull: {
-          comments: {
-            _id: req.body.commentId,
+  Post.findOne({ _id: req.params.id })
+    .then((post) => {
+      const theComment = post.comments.find((comment) =>
+        comment._id.equals(req.body.commentId)
+      );
+      if (
+        theComment.commenterId === res.locals.user._id.valueOf() ||
+        res.locals.user.role === "admin"
+      ) {
+        Post.findByIdAndUpdate(
+          req.params.id,
+          {
+            $pull: {
+              comments: {
+                _id: req.body.commentId,
+              },
+            },
           },
-        },
-      },
-      { new: true },
-      (err, docs) => {
-        if (!err) return res.send(docs);
-        else return res.status(400).send(err);
+          { new: true },
+          (err, docs) => {
+            if (!err) return res.send(docs);
+            else return res.status(400).send(err);
+          }
+        );
+      } else {
+        res.status(401).json({ error: "Non autorisé" });
       }
-    );
-  } catch (err) {
-    return res.status(400).send(err);
-  }
+    })
+    .catch((err) => res.status(500).json(err));
 };

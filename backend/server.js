@@ -5,7 +5,7 @@ const postRoutes = require("./routes/post.routes");
 const path = require("path");
 require("dotenv").config({ path: "./config/.env" });
 require("./config/db");
-const { checkUser, requireAuth } = require("./middleware/auth.middleware");
+const { checkUser, getToken } = require("./middleware/auth.middleware");
 const cors = require("cors");
 
 const app = express();
@@ -24,9 +24,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //jwt
-app.get("*", checkUser);
-app.get("/jwtid", requireAuth, (req, res) => {
-  res.status(200).send(res.locals.user._id);
+// app.get("*", checkUser);
+app.get("/jwtid", checkUser, getToken, (req, res) => {
+  res
+    .status(200)
+    .send({ userId: res.locals.user._id, userRole: res.locals.user.role });
 });
 
 // routes

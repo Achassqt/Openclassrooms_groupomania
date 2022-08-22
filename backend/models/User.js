@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema(
       require: [true, "mot de passe requis"],
       minlength: [6, "le mot de passe doit faire 6 caractères minimum"],
     },
+    role: {
+      type: String,
+      default: "standard",
+      required: true,
+    },
     imageUrl: {
       type: String,
       default: "./uploads/images/profil/random-user.png",

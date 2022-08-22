@@ -217,13 +217,15 @@ const SideBarUser = styled.div`
 `
 
 function SideBar({ userData, posts }) {
-  const { uid, setUserDeleted } = useContext(Context)
+  const { uid, userRole, setUserDeleted } = useContext(Context)
   const [modalOpen, setModalOpen] = useState(false)
 
   const [userPseudo, setUserPseudo] = useState()
   const [userPicture, setUserPicture] = useState()
 
   const userPosts = posts.filter((post) => post.posterId === uid)
+  const userLikes = posts.filter((post) => post.likers.includes(uid))
+  console.log(userLikes)
 
   useEffect(() => {
     setUserPseudo(userData.pseudo)
@@ -250,6 +252,18 @@ function SideBar({ userData, posts }) {
     window.location = '/'
   }
 
+  const unlike = () => {
+    userLikes.map((post) => {
+      axios({
+        method: 'patch',
+        url: `${process.env.REACT_APP_API_URL}api/post/unlike/` + post._id,
+        data: { id: uid },
+      })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    })
+  }
+
   const supprAllUserPosts = () => {
     userPosts.map((post) => {
       axios({
@@ -265,6 +279,7 @@ function SideBar({ userData, posts }) {
   const suppr = async () => {
     setUserDeleted(true)
     supprAllUserPosts()
+    unlike()
     await axios({
       method: 'delete',
       url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
@@ -301,7 +316,7 @@ function SideBar({ userData, posts }) {
                 </SideBarOption>
               </StyledLink>
             )}
-            <StyledLink to="home">
+            <StyledLink to="/home">
               <SideBarOption>
                 <IoEllipsisHorizontalCircleOutline />
                 <span>Plus</span>
@@ -320,16 +335,20 @@ function SideBar({ userData, posts }) {
               <span onClick={logout} className="logout">
                 Se déconnecter
               </span>
-              <span
-                onClick={() => {
-                  if (window.confirm('Voulez-vous supprimer votre compte ?')) {
-                    suppr()
-                  }
-                }}
-                className="delete"
-              >
-                Supprimer mon compte
-              </span>
+              {userRole === 'standard' && (
+                <span
+                  onClick={() => {
+                    if (
+                      window.confirm('Voulez-vous supprimer votre compte ?')
+                    ) {
+                      suppr()
+                    }
+                  }}
+                  className="delete"
+                >
+                  Supprimer mon compte
+                </span>
+              )}
               <div className="square"></div>
               <div className="cache-square"></div>
             </div>

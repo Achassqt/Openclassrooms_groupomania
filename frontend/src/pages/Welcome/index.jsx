@@ -139,7 +139,6 @@ function Welcome() {
           </LinksContent>
         </div>
       </div>
-      {/* <footer className="footer-content"></footer> */}
 
       <Outlet />
     </WelcomeWrapper>

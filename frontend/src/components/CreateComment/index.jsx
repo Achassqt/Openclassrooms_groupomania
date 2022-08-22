@@ -23,6 +23,7 @@ function CreateComment({ post }) {
           text: message,
           commenterPseudo: userData.pseudo,
         },
+        withCredentials: true,
       })
         .then(() => {
           setGetPosts(true)

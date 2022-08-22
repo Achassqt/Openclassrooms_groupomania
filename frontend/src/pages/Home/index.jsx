@@ -16,7 +16,7 @@ const HomeWrapper = styled.div`
   height: 100vh;
   display: flex;
   /* background-color: black; */
-  overflow-y: auto;
+  /* overflow-y: auto; */
 `
 
 const StyledMain = styled.main`
@@ -29,6 +29,7 @@ const CenterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 600px;
+  /* border-right: solid 1px ${colors.secondary}; */
   /* box-sizing: border-box; */
 `
 
@@ -41,7 +42,7 @@ const RightSideWrapper = styled.div`
 `
 
 function Home() {
-  const { uid } = useContext(Context)
+  const { uid, userRole, isLoading, setIsLoading } = useContext(Context)
 
   const [userData, setUserData] = useState({})
   const [getUserData, setGetUserData] = useState(true)
@@ -72,7 +73,16 @@ function Home() {
 
   return (
     <Context.Provider
-      value={{ uid, userData, setGetUserData, userDeleted, setUserDeleted }}
+      value={{
+        uid,
+        userRole,
+        userData,
+        isLoading,
+        setIsLoading,
+        setGetUserData,
+        userDeleted,
+        setUserDeleted,
+      }}
     >
       <HomeWrapper>
         <SideBar userData={userData} posts={posts} />

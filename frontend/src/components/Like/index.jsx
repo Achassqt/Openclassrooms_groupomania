@@ -86,13 +86,20 @@ function Like({ post }) {
   useEffect(() => {
     if (post.likers.includes(uid)) setLiked(true)
     else setLiked(false)
-  }, [uid, post.likers, liked])
+  }, [])
 
   return (
     <LikeContainer>
-      {uid && liked === false ? (
+      {liked === false ? (
         <>
-          <div onClick={like} className="icon">
+          <div
+            onClick={() => {
+              if (uid) {
+                like()
+              }
+            }}
+            className="icon"
+          >
             <AiOutlineHeart />
           </div>
           <span>{post.likers.length}</span>
@@ -100,7 +107,11 @@ function Like({ post }) {
       ) : (
         <>
           <div
-            onClick={unlike}
+            onClick={() => {
+              if (uid) {
+                unlike()
+              }
+            }}
             className="icon"
             style={{ color: `${colors.primary}` }}
           >

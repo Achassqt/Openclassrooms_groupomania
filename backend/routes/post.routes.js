@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const postCtrl = require("../controllers/post.controller");
 const multer = require("../middleware/multer-posts.middleware");
+const { checkUser } = require("../middleware/auth.middleware");
+
 // const multer = require("multer");
 
 // const upload = multer({
@@ -13,16 +15,16 @@ const multer = require("../middleware/multer-posts.middleware");
 //   }),
 // });
 
-router.post("/", multer, postCtrl.createPost);
+router.post("/", checkUser, multer, postCtrl.createPost);
 router.get("/", postCtrl.readPost);
-router.put("/:id", multer, postCtrl.updatePost);
-router.delete("/:id", postCtrl.deletePost);
+router.put("/:id", checkUser, multer, postCtrl.updatePost);
+router.delete("/:id", checkUser, postCtrl.deletePost);
 router.patch("/like/:id", postCtrl.likes);
 router.patch("/unlike/:id", postCtrl.unlikes);
 
 // commentaires
-router.patch("/comment/:id", postCtrl.commentPost);
-router.patch("/edit-comment/:id", postCtrl.editCommentPost);
-router.patch("/delete-comment/:id", postCtrl.deleteCommentPost);
+router.patch("/comment/:id", checkUser, postCtrl.commentPost);
+// router.patch("/edit-comment/:id", checkUser, postCtrl.editCommentPost);
+router.patch("/delete-comment/:id", checkUser, postCtrl.deleteCommentPost);
 
 module.exports = router;

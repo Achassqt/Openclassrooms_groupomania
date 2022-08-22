@@ -72,7 +72,7 @@ const CommentText = styled.div`
 `
 
 function Comments({ post, usersData, comment }) {
-  const { uid, setGetPosts, userDeleted } = useContext(Context)
+  const { uid, userRole, setGetPosts, userDeleted } = useContext(Context)
   const [editComment, setEditComment] = useState(false)
 
   const [oldUser, setOldUser] = useState(false)
@@ -108,6 +108,7 @@ function Comments({ post, usersData, comment }) {
       data: {
         commentId: comment._id,
       },
+      withCredentials: true,
     })
       .then(() => {
         setGetPosts(true)
@@ -168,13 +169,13 @@ function Comments({ post, usersData, comment }) {
               {dateParser(post.createdAt)}
             </span>
           </div>
-          {uid === comment.commenterId && (
+          {uid === comment.commenterId || userRole === 'admin' ? (
             <Modal
               editComment={editComment}
               setEditComment={setEditComment}
               deleteComment={deleteComment}
             />
-          )}
+          ) : null}
         </CommentHeader>
         <CommentText>
           <span>{comment.text}</span>

@@ -7,7 +7,7 @@ import Like from '../Like'
 import Modal from '../../utils/style/Modal'
 import { ButtonPoster } from '../../utils/style/Button'
 
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import axios from 'axios'
 import { Context } from '../../utils/AppContext'
 import CreateComment from '../CreateComment'
@@ -314,7 +314,7 @@ const CommentsContainer = styled.ul`
 `
 
 function Post({ post }) {
-  const { setGetPosts, uid } = useContext(Context)
+  const { setGetPosts, uid, userRole, setIsLoading } = useContext(Context)
   const [showComments, setShowComments] = useState(false)
 
   const [usersData, setUsersData] = useState({})
@@ -334,6 +334,7 @@ function Post({ post }) {
       data: {
         message: textEdit,
       },
+      withCredentials: true,
     })
       .then(() => {
         setEditPost(false)
@@ -346,6 +347,7 @@ function Post({ post }) {
     axios({
       method: 'delete',
       url: `${process.env.REACT_APP_API_URL}api/post/${post._id}`,
+      withCredentials: true,
     })
       .then(() => {
         setEditPost(false)
@@ -369,9 +371,10 @@ function Post({ post }) {
           .catch((err) => console.log(err))
       }
       getAllUsers()
+      // setIsLoading(false)
       setGetAllUsersData(false)
     }
-  }, [getAllUsersData])
+  }, [getAllUsersData, setIsLoading])
 
   const isEmpty = (value) => {
     return (
@@ -396,9 +399,23 @@ function Post({ post }) {
     return date.toString()
   }
 
+  const textFocus = useRef(null)
+
+  useEffect(() => {
+    if (editPost === true) {
+      textFocus.current.value = ''
+      textFocus.current.focus()
+      textFocus.current.value = post.message
+    }
+  }, [editPost, post.message])
+
   return (
     <>
-      <FeedPost key={post._id} style={{ borderBottom: showComments && 'none' }}>
+      <FeedPost
+        id="test"
+        key={post._id}
+        style={{ borderBottom: showComments && 'none' }}
+      >
         {showComments === false && (
           <FeedPostLeft>
             <img
@@ -459,7 +476,7 @@ function Post({ post }) {
                 </span>
               </div>
             </div>
-            {uid === post.posterId && (
+            {uid === post.posterId || userRole === 'admin' ? (
               <div
                 style={{
                   position: showComments && 'relative',
@@ -473,7 +490,7 @@ function Post({ post }) {
                   message={post.message}
                 />
               </div>
-            )}
+            ) : null}
           </FeedPostHeader>
           <FeedPostText>
             {editPost === false && (
@@ -485,8 +502,9 @@ function Post({ post }) {
               </p>
             )}
             <textarea
+              ref={textFocus}
               onChange={(e) => setTextEdit(e.target.value)}
-              defaultValue={post.message}
+              // defaultValue={post.message}
               style={{
                 transform: editPost ? 'scale(1)' : 'scale(0)',
                 position: editPost === false && 'absolute',

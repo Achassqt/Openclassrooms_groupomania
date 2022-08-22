@@ -169,9 +169,6 @@ function Modal({
           onClick={() => {
             setEditPost(true)
             setModalOpen(!modalOpen)
-
-            document.querySelector('.edit-text').focus()
-            document.querySelectorAll('.edit-text').value = message
           }}
           style={{ display: editComment ? 'none' : 'flex' }}
           className="edit"
