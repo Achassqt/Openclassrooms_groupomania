@@ -14,11 +14,12 @@ import CreateComment from '../CreateComment'
 
 const FeedPost = styled.li`
   display: flex;
-  border-bottom: solid 1px ${colors.secondary};
-  border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary};
+  border-bottom: solid 0.5px ${colors.secondary};
+  /* border-right: solid 1px ${colors.secondary};
+  border-left: solid 1px ${colors.secondary}; */
   padding: 0 16px;
   padding-top: 12px;
+  /* min-height: 100px; */
   box-sizing: border-box;
 `
 
@@ -198,6 +199,8 @@ const FeedPostText = styled.div`
   .post-text {
     margin: 0;
     overflow-wrap: break-word;
+    /* word-break: break-all; */
+    word-break: break-word;
   }
 
   .edit-text {
@@ -235,11 +238,10 @@ const FeedPostImage = styled.div`
   /* box-sizing: border-box; */
 
   img {
-    /* border: 1px solid grey; */
     border-radius: 16px;
-    min-width: 400px;
-    max-width: 505px;
-    max-height: 505px;
+    min-width: 224px;
+    width: 100%;
+    max-height: 600px;
     height: auto;
     outline: solid ${colors.secondary} 1px;
     object-fit: cover;
@@ -288,8 +290,8 @@ const FeedPostIcons = styled.div`
 
 const CommentsContainer = styled.ul`
   margin: 0;
-  border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary};
+  /* border-right: solid 1px ${colors.secondary};
+  border-left: solid 1px ${colors.secondary}; */
   border-bottom: double 3px ${colors.secondary};
   padding: 16px;
   padding-top: 0;
@@ -313,17 +315,36 @@ const CommentsContainer = styled.ul`
   }
 `
 
-function Post({ post }) {
-  const { setGetPosts, uid, userRole, setIsLoading } = useContext(Context)
+function Post({ post, usersData }) {
+  const { setGetPosts, uid, userRole } = useContext(Context)
   const [showComments, setShowComments] = useState(false)
-
-  const [usersData, setUsersData] = useState({})
-  const [getAllUsersData, setGetAllUsersData] = useState(true)
 
   const [editPost, setEditPost] = useState(false)
   const [textEdit, setTextEdit] = useState(null)
 
-  // const [comments, setComments] = useState([post.comments])
+  // const [usersData, setUsersData] = useState({})
+  // const [getAllUsersData, setGetAllUsersData] = useState(true)
+
+  // useEffect(() => {
+  //   // setGetAllUsersData(true)
+  //   if (getAllUsersData) {
+  //     const getAllUsers = async () => {
+  //       await axios({
+  //         method: 'get',
+  //         url: `${process.env.REACT_APP_API_URL}api/user/`,
+  //         withCredentials: true,
+  //       })
+  //         .then((res) => {
+  //           console.log(res)
+  //           setUsersData(res.data)
+  //         })
+  //         .catch((err) => console.log(err))
+  //     }
+  //     getAllUsers()
+  //     // setIsLoading(false)
+  //     // setGetAllUsersData(false)
+  //   }
+  // }, [getAllUsersData])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -355,26 +376,6 @@ function Post({ post }) {
       })
       .catch((err) => console.log(err))
   }
-
-  useEffect(() => {
-    if (getAllUsersData) {
-      const getAllUsers = async () => {
-        await axios({
-          method: 'get',
-          url: `${process.env.REACT_APP_API_URL}api/user/`,
-          withCredentials: true,
-        })
-          .then((res) => {
-            console.log(res)
-            setUsersData(res.data)
-          })
-          .catch((err) => console.log(err))
-      }
-      getAllUsers()
-      // setIsLoading(false)
-      setGetAllUsersData(false)
-    }
-  }, [getAllUsersData, setIsLoading])
 
   const isEmpty = (value) => {
     return (
@@ -523,8 +524,8 @@ function Post({ post }) {
               <img
                 src={post.imageUrl}
                 style={{
-                  maxWidth: showComments && '600px',
-                  maxHeight: showComments && 'auto',
+                  maxWidth: showComments && '100%',
+                  maxHeight: showComments && '600px',
                 }}
                 alt="img"
               />
@@ -550,8 +551,8 @@ function Post({ post }) {
                 justifyContent: 'space-evenly',
                 margin: '0',
                 padding: '10px',
-                borderTop: `1px solid ${colors.secondary}`,
-                borderBottom: `1px solid ${colors.secondary}`,
+                borderTop: `0.5px solid ${colors.secondary}`,
+                borderBottom: `0.5px solid ${colors.secondary}`,
                 marginTop: '20px',
               }}
             >

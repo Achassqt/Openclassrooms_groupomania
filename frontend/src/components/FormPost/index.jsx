@@ -11,9 +11,9 @@ const CreatePostWrapper = styled.div`
   display: flex;
   padding-bottom: 4px;
   padding-top: 8px;
-  border-bottom: solid 1px ${colors.secondary};
-  border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary};
+  border-bottom: solid 0.5px ${colors.secondary};
+  /* border-right: solid 1px ${colors.secondary};
+  border-left: solid 1px ${colors.secondary}; */
 `
 
 const CreatePostLeft = styled.div`
@@ -25,6 +25,18 @@ const CreatePostLeft = styled.div`
     width: 48px;
     border-radius: 50%;
     object-fit: cover;
+
+    @keyframes opacity {
+      0% {
+        opacity: 0;
+      }
+      40% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
   }
 `
 
@@ -63,6 +75,15 @@ const CreatePostRight = styled.form`
       color: white;
     }
   }
+
+  .text-error {
+    color: #ed0000;
+  }
+
+  .image-error {
+    margin-top: 10px;
+    color: #ed0000;
+  }
 `
 
 const CreatePostImage = styled.div`
@@ -80,8 +101,9 @@ const CreatePostImage = styled.div`
     border-radius: 16px;
     /* min-width: 400px;
     max-width: 505px; */
-    width: 505px;
+    width: 100%;
     height: auto;
+    max-height: 600px;
     outline: solid ${colors.secondary} 1px;
     object-fit: cover;
   }
@@ -162,9 +184,8 @@ const CreatePostBottom = styled.div`
   }
 
   ${ButtonPoster} {
-    width: 91px;
+    width: 100px;
     height: 36px;
-    font-size: 16px;
     font-weight: 700;
     margin-left: 12px;
   }
@@ -186,22 +207,26 @@ function FormPost({
   commentForm,
   setCommentForm,
 }) {
-  const { userData, uid } = useContext(Context)
+  const { userData, uid, isLoading } = useContext(Context)
 
   const [createPost, setCreatePost] = useState(false)
 
   const [isActive, setIsActive] = useState(false)
+
+  const [textError, setTextError] = useState(false)
+
+  const [imageError, setImageError] = useState(false)
 
   const handlePicture = (e) => {
     const file = e.target.files[0]
     if (file.size > 5000000) {
       setFile('')
       setPostPicture('')
-      // setImageErrors({ message: "Taille d'image maximal: 5MB" })
-      // return bannerErrors
+      setImageError(true)
     } else {
       setPostPicture(URL.createObjectURL(file))
       setFile(e.target.files[0])
+      setImageError(false)
     }
   }
 
@@ -211,6 +236,7 @@ function FormPost({
       setPostPicture('')
       setFile('')
       setCreatePost(false)
+      setImageError(false)
     } else {
       setMessage('')
       setCreatePost(false)
@@ -219,9 +245,10 @@ function FormPost({
         setIsActive(false)
       }
     }
+    setTextError(false)
   }
 
-  const textFocus = useRef(null)
+  const textFocus = useRef()
 
   useEffect(() => {
     if (createPost === true) {
@@ -238,7 +265,16 @@ function FormPost({
           alignItems: commentForm && 'center',
         }}
       >
-        {uid ? <img src={userData.imageUrl} alt="pp" /> : null}
+        {uid || isLoading ? (
+          <img
+            style={{
+              scale: isLoading ? '0' : '1',
+              animation: isLoading === false && 'opacity 500ms ease-in-out',
+            }}
+            src={userData.imageUrl}
+            alt="pp"
+          />
+        ) : null}
       </CreatePostLeft>
       <CreatePostRight
         onSubmit={(e) => {
@@ -276,15 +312,26 @@ function FormPost({
         </p>
         <textarea
           ref={textFocus}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value)
+            if (e.target.value.length === 400) {
+              setTextError(true)
+            } else setTextError(false)
+          }}
           style={{
             transform: createPost ? 'scale(1)' : 'scale(0)',
             position: createPost === false && 'absolute',
           }}
           placeholder="Quoi de neuf ?"
+          maxlength="400"
           spellCheck="false"
           className="post-text"
         />
+        {textError && (
+          <span className="text-error">
+            Nombre de caractères maximal 400/400
+          </span>
+        )}
         {postPicture && (
           <CreatePostImage>
             <img src={postPicture} alt="post-pic" />
@@ -311,6 +358,9 @@ function FormPost({
             </div>
           </CreatePostImage>
         )}
+        {imageError && (
+          <span className="image-error">Taille d'image maximal: 5MB</span>
+        )}
         <CreatePostBottom
           style={{ justifyContent: commentForm === false && 'flex-end' }}
         >
@@ -329,7 +379,7 @@ function FormPost({
           )}
 
           <div>
-            {createPost || postPicture ? (
+            {createPost || postPicture || imageError ? (
               <ButtonPoster
                 type="button"
                 onClick={() => {

@@ -5,10 +5,27 @@ import { ButtonPoster } from '../../utils/style/Button'
 import iconGroupomania from '../../assets/icon-groupomania.png'
 import colors from '../../utils/style/colors'
 
+const LogWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 320px;
+  height: 100%;
+  width: 100%;
+  background-color: ${colors.hoverTertiary}99;
+
+  @media (max-width: 704px) {
+    /* background-color: ${colors.tertiary}; */
+    /* min-height: 500px;
+    overflow: auto; */
+  }
+`
+
 const LoginContent = styled.article`
   background-color: ${colors.tertiary};
   height: 650px;
-  max-height: 90%;
+  min-height: 300px;
+  max-height: 90vh;
   width: 600px;
   position: absolute;
   top: 50%;
@@ -18,17 +35,32 @@ const LoginContent = styled.article`
   outline: 1px solid ${colors.secondary};
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;
+
+  @media (max-width: 704px) {
+    outline: none;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    min-height: 0px;
+    border-radius: 0;
+  }
 
   & > header {
     /* background-color: green; */
+    position: sticky;
     border-radius: 17px 17px 0 0;
     color: white;
     width: 100%;
     min-height: 53px;
+    height: 53px;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @media (max-width: 704px) {
+      position: relative;
+    }
 
     & > a {
       position: absolute;
@@ -57,6 +89,15 @@ const LoginContent = styled.article`
   }
 `
 
+const LoginWrapper = styled.div`
+  overflow: auto;
+  height: 100%;
+
+  @media (max-width: 704px) {
+    overflow: auto;
+  }
+`
+
 const LoginSection = styled.section`
   width: 370px;
   margin: 0 auto;
@@ -65,10 +106,8 @@ const LoginSection = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* align-self: center; */
-  height: 100%;
+  min-height: 100%;
   box-sizing: border-box;
-  /* overflow: hidden; */
 
   & > h2 {
     font-size: 31px;
@@ -99,6 +138,10 @@ const LoginSection = styled.section`
         ::placeholder {
           color: white;
         }
+
+        :focus {
+          outline: 1px solid ${colors.secondary};
+        }
       }
     }
 
@@ -128,39 +171,44 @@ function Log(props) {
   const mapForm = props.mapForm
 
   return (
-    <LoginContent>
-      <header>
-        <Link to="/">
-          <IoCloseOutline />
-        </Link>
-        <img src={iconGroupomania} alt="fezf" />
-      </header>
-      <LoginSection>
-        <h2>{props.title}</h2>
-        <form onSubmit={props.handleFunction}>
-          {mapForm.map((data, index) => (
-            <div className="input-container" key={index}>
-              <input
-                type={data.type}
-                name={data.name}
-                placeholder={data.placeholder}
-                onChange={data.onChange}
-                value={data.value}
-              ></input>
-              <div
-                className="email error"
-                dangerouslySetInnerHTML={data.dangerouslySetInnerHTML}
-              ></div>
-            </div>
-          ))}
-          <ButtonPoster type="submit">{props.btnName}</ButtonPoster>
-        </form>
+    <LogWrapper>
+      <LoginContent>
+        <header>
+          <Link onClick={() => props.setStopScroll(false)} to="/">
+            <IoCloseOutline />
+          </Link>
+          <img src={iconGroupomania} alt="fezf" />
+        </header>
+        <LoginWrapper>
+          <LoginSection>
+            <h2>{props.title}</h2>
+            <form onSubmit={props.handleFunction}>
+              {mapForm.map((data, index) => (
+                <div className="input-container" key={index}>
+                  <input
+                    type={data.type}
+                    name={data.name}
+                    placeholder={data.placeholder}
+                    onChange={data.onChange}
+                    value={data.value}
+                    spellCheck="false"
+                  ></input>
+                  <div
+                    className="email error"
+                    dangerouslySetInnerHTML={data.dangerouslySetInnerHTML}
+                  ></div>
+                </div>
+              ))}
+              <ButtonPoster type="submit">{props.btnName}</ButtonPoster>
+            </form>
 
-        <span>
-          {props.question} <Link to={props.link}>{props.linkName}</Link>
-        </span>
-      </LoginSection>
-    </LoginContent>
+            <span>
+              {props.question} <Link to={props.link}>{props.linkName}</Link>
+            </span>
+          </LoginSection>
+        </LoginWrapper>
+      </LoginContent>
+    </LogWrapper>
   )
 }
 

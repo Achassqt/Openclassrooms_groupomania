@@ -9,16 +9,23 @@ import { Context } from '../../utils/AppContext'
 import axios from 'axios'
 
 const ProfileWrapper = styled.div`
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 100%;
+  min-height: 420px;
   width: 100%;
-  background-color: rgba(91, 112, 131, 0.4);
+  /* background-color: rgba(91, 112, 131, 0.4); */
+  background-color: ${colors.hoverTertiary}99;
   z-index: 1;
 `
 
 const ProfileContent = styled.form`
   background-color: ${colors.tertiary};
   height: 650px;
+  min-height: 376px;
+  max-height: 90vh;
+  min-width: 320px;
   width: 600px;
   position: absolute;
   top: 50%;
@@ -28,9 +35,21 @@ const ProfileContent = styled.form`
   border: 1px solid ${colors.secondary};
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+
+  @media (max-width: 704px) {
+    border: none;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    min-height: 0px;
+    border-radius: 0;
+    /* align-items: center; */
+  }
 
   & > header {
     /* background-color: green; */
+    position: sticky;
     border-radius: 17px 17px 0 0;
     color: white;
     width: 100%;
@@ -65,6 +84,10 @@ const ProfileContent = styled.form`
       justify-content: space-between;
       padding: 0 16px;
 
+      @media (max-width: 375px) {
+        padding: 0;
+      }
+
       .title {
         position: relative;
         top: 1px;
@@ -73,24 +96,47 @@ const ProfileContent = styled.form`
         padding-left: 9px;
       }
 
-      .btn-annuler {
-        /* display: none; */
-        position: relative;
-        left: 60px;
-        font-size: 14px;
-        font-weight: 700;
-        height: 34px;
-        width: 100px;
-      }
+      .btn {
+        display: flex;
 
-      .btn-enregistrer {
-        font-size: 14px;
-        font-weight: 700;
-        height: 34px;
-        width: 150px;
+        /* @media (max-width: 500px) {
+          flex-direction: column-reverse;
+          align-items: flex-end;
+        } */
+
+        .btn-annuler {
+          /* display: none; */
+          /* position: relative;
+          left: 60px; */
+          margin-right: 10px;
+          /* font-size: 14px; */
+          font-weight: 700;
+          height: 38px;
+          width: 100px;
+
+          @media (max-width: 500px) {
+            width: 75px;
+          }
+        }
+
+        .btn-enregistrer {
+          /* font-size: 14px; */
+          font-weight: 700;
+          height: 38px;
+          width: 150px;
+
+          @media (max-width: 500px) {
+            width: 100px;
+          }
+        }
       }
     }
   }
+`
+
+const ProfileSectionWrapper = styled.div`
+  height: 100%;
+  overflow: auto;
 `
 
 const ProfileSection = styled.section`
@@ -99,13 +145,19 @@ const ProfileSection = styled.section`
   /* padding-bottom: 60px; */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  justify-content: flex-start;
+  min-height: 100%;
   box-sizing: border-box;
 
   .images {
+    padding-bottom: 40px;
+    box-sizing: border-box;
+
     .banner-container {
+      /* height: 25vh; */
       height: 230px;
+      min-height: 180px;
+      /* max-height: 230px; */
       width: 100%;
       position: relative;
 
@@ -125,6 +177,10 @@ const ProfileSection = styled.section`
         transform: translate(-50%, 0);
         color: #ed0000;
         z-index: 10;
+
+        @media (max-width: 500px) {
+          top: 3px;
+        }
       }
 
       .edit-banner-container {
@@ -190,9 +246,8 @@ const ProfileSection = styled.section`
         }
       }
     }
-  }
 
-  /* .banner {
+    /* .banner {
       height: 195px;
       width: 100%;
       object-fit: cover;
@@ -201,90 +256,98 @@ const ProfileSection = styled.section`
       box-sizing: border-box;
     } */
 
-  .profile-picture-container {
-    position: relative;
-    height: 115px;
-    width: 115px;
-    margin: -50px 0 0 20px;
-    border-radius: 50%;
-
-    .profile-picture {
-      height: 100%;
-      width: 100%;
+    .profile-picture-container {
+      position: relative;
+      height: 115px;
+      width: 115px;
+      margin: -50px 0 0 20px;
       border-radius: 50%;
-      outline: 2px solid ${colors.tertiary};
-      object-fit: cover;
-      /* position: relative;
+
+      .profile-picture {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        outline: 2px solid ${colors.tertiary};
+        object-fit: cover;
+        /* position: relative;
         bottom: 50px;
         left: 15px; */
-      /* margin: -50px 0 0 20px; */
-    }
+        /* margin: -50px 0 0 20px; */
+      }
 
-    .image-error {
-      position: absolute;
-      bottom: 5px;
-      right: -200px;
-      color: #ed0000;
-    }
+      .image-error {
+        position: absolute;
+        bottom: 5px;
+        right: -200px;
+        color: #ed0000;
+        /* word-break: break-all; */
 
-    .edit-picture-container {
-      /* background-color: red; */
-      background-color: ${colors.hoverTertiary}50;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
+        @media (max-width: 374px) {
+          bottom: -28px;
+          right: -100px;
+          left: 0;
+        }
+      }
 
-      .edit-picture-btn {
-        background-color: ${colors.primary}99;
-        /* background-color: ${colors.tertiary}50; */
-        width: 42px;
-        height: 42px;
+      .edit-picture-container {
+        /* background-color: red; */
+        background-color: ${colors.hoverTertiary}50;
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
-        border: none;
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
 
-        :hover {
-          background-color: ${colors.hoverPrimary}99;
-          /* background-color: ${colors.tertiary}99; */
-        }
-
-        & > input {
-          display: none;
-        }
-
-        .edit-picture-logo {
-          width: 22px;
-          height: 22px;
-          color: white;
-        }
-
-        .picture-aria-label {
-          background-color: ${colors.primary}80;
-          display: none;
-          justify-content: center;
-          align-items: center;
+        .edit-picture-btn {
+          background-color: ${colors.primary}99;
+          /* background-color: ${colors.tertiary}50; */
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          border: none;
           position: absolute;
-          bottom: -23px;
-          width: 100px;
-          height: 20px;
-          border-radius: 2px;
-          font-size: 12px;
-          color: white;
-        }
-
-        &:hover > .picture-aria-label {
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
           display: flex;
+          align-items: center;
+          justify-content: center;
+
+          :hover {
+            background-color: ${colors.hoverPrimary}99;
+            /* background-color: ${colors.tertiary}99; */
+          }
+
+          & > input {
+            display: none;
+          }
+
+          .edit-picture-logo {
+            width: 22px;
+            height: 22px;
+            color: white;
+          }
+
+          .picture-aria-label {
+            background-color: ${colors.primary}80;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: -23px;
+            width: 100px;
+            height: 20px;
+            border-radius: 2px;
+            font-size: 12px;
+            color: white;
+          }
+
+          &:hover > .picture-aria-label {
+            display: flex;
+          }
         }
       }
     }
@@ -294,38 +357,50 @@ const ProfileSection = styled.section`
     margin: 20px;
   }
 
-  & > input {
+  .pseudo-edit {
     position: relative;
-    top: -60px;
-    background-color: ${colors.tertiary};
-    border: 1px ${colors.secondary} solid;
-    height: 60px;
-    margin: 0 20px;
-    border-radius: 5px;
-    font-size: 17px;
-    color: white;
-    padding: 0 10px;
+    width: 100%;
+    margin-bottom: 40px;
+    padding: 0 20px;
+    box-sizing: border-box;
 
-    :focus {
-      /* border-color: ${colors.primary}; */
-      outline: none;
-    }
-
-    &::placeholder {
+    & > input {
+      box-sizing: border-box;
+      /* position: relative;
+      top: 40px; */
+      width: 100%;
+      background-color: ${colors.tertiary};
+      border: 1px ${colors.secondary} solid;
+      height: 60px;
+      /* margin: 0 20px; */
+      border-radius: 5px;
+      font-size: 17px;
       color: white;
-      /* padding-left: 10px; */
-    }
-  }
+      padding: 0 10px;
 
-  .pseudo-error {
-    color: #ed0000;
-    position: absolute;
-    bottom: 30%;
-    left: 20px;
+      :focus {
+        /* border-color: ${colors.primary}; */
+        outline: 1px solid ${colors.secondary};
+      }
+
+      &::placeholder {
+        color: white;
+      }
+    }
+
+    .pseudo-error {
+      color: #ed0000;
+      position: absolute;
+      bottom: -25px;
+      left: 20px;
+    }
   }
 
   .date {
-    margin: 0 20px 30px;
+    height: 20px;
+    margin-top: auto;
+    justify-self: flex-end;
+    /* margin: 0 20px 30px; */
     font-weight: bold;
     color: white;
   }
@@ -467,186 +542,200 @@ function Profile() {
           </Link>
           <div className="header-right-side">
             <span className="title">Éditer le profil</span>
-            <ButtonPoster
-              onClick={() => {
-                setPseudo(userData.pseudo)
-                setProfileFile(null)
-                setProfilePreview(null)
-                setBannerFile(null)
-                setBannerPreview(null)
-                setBannerErrors({})
-                setProfileErrors({ message: '' })
-                setPseudoErrors({ message: '' })
-              }}
-              type="button"
-              className="btn-annuler"
-              style={{
-                display:
-                  pseudo !== userData.pseudo ||
-                  profilePreview ||
-                  bannerPreview ||
-                  bannerErrors.message === "Taille d'image maximal: 5MB" ||
-                  profileErrors.message === "Taille d'image maximal: 5MB" ||
-                  pseudoErrors.message === 'Pseudo déjà pris'
-                    ? 'block'
-                    : 'none',
-              }}
-            >
-              Annuler
-            </ButtonPoster>
-            <ButtonPoster type="submit" className="btn-enregistrer">
-              Enregistrer
-            </ButtonPoster>
-          </div>
-        </header>
-        <ProfileSection>
-          <div className="images">
-            {userData.banner ? (
-              <div
-                onMouseEnter={() => setHoverStyleBanner(true)}
-                onMouseLeave={() => setHoverStyleBanner(false)}
-                className="banner-container"
+            <div className="btn">
+              <ButtonPoster
+                onClick={() => {
+                  setPseudo(userData.pseudo)
+                  setProfileFile(null)
+                  setProfilePreview(null)
+                  setBannerFile(null)
+                  setBannerPreview(null)
+                  setBannerErrors({})
+                  setProfileErrors({ message: '' })
+                  setPseudoErrors({ message: '' })
+                }}
+                type="button"
+                className="btn-annuler"
+                style={{
+                  display:
+                    pseudo !== userData.pseudo ||
+                    profilePreview ||
+                    bannerPreview ||
+                    bannerErrors.message === "Taille d'image maximal: 5MB" ||
+                    profileErrors.message === "Taille d'image maximal: 5MB" ||
+                    pseudoErrors.message === 'Pseudo déjà pris'
+                      ? 'block'
+                      : 'none',
+                }}
               >
-                {bannerPreview ? (
-                  <>
-                    <img
-                      src={bannerPreview}
-                      className="banner"
-                      alt="bannière"
-                    />
-                    <span className="image-error">{bannerErrors.message}</span>
-                  </>
-                ) : (
-                  <>
-                    <img
-                      className="banner"
-                      src={userData.banner}
-                      alt="bannière"
-                    />
-                    <span className="image-error">{bannerErrors.message}</span>
-                  </>
-                )}
-                <div
-                  style={{ display: hoverStyleBanner ? 'block' : 'none' }}
-                  className="edit-banner-container"
-                >
-                  <label htmlFor="banner-preview" className="edit-banner-btn">
-                    <FaRegEdit className="edit-banner-logo" />
-                    <input
-                      id="banner-preview"
-                      name="file"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleBannerFile}
-                    ></input>
-                    <div className="banner-aria-label">Ajouter une photo</div>
-                  </label>
-                </div>
-              </div>
-            ) : (
-              <div
-                className="banner-container"
-                onMouseEnter={() => setHoverStyleBanner(true)}
-                onMouseLeave={() => setHoverStyleBanner(false)}
-              >
-                {bannerPreview ? (
-                  <>
-                    <img
-                      src={bannerPreview}
-                      className="banner"
-                      alt="bannière"
-                    />
-                    <span className="image-error">{bannerErrors.message}</span>
-                  </>
-                ) : (
-                  <>
-                    <div
-                      style={{
-                        backgroundColor: `${colors.secondary}`,
-                      }}
-                      className="banner"
-                    ></div>
-                    <span className="image-error">{bannerErrors.message}</span>
-                  </>
-                )}
-                <div
-                  style={{ display: hoverStyleBanner ? 'block' : 'none' }}
-                  className="edit-banner-container"
-                >
-                  <label htmlFor="banner-preview" className="edit-banner-btn">
-                    <FaRegEdit className="edit-banner-logo" />
-                    <input
-                      id="banner-preview"
-                      name="file"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleBannerFile}
-                      // style={{ display: 'block' }}
-                    ></input>
-                    <div className="banner-aria-label">Ajouter une photo</div>
-                  </label>
-                </div>
-              </div>
-            )}
-
-            <div
-              className="profile-picture-container"
-              onMouseEnter={() => setHoverStylePicture(true)}
-              onMouseLeave={() => setHoverStylePicture(false)}
-            >
-              {profilePreview ? (
-                <>
-                  <img
-                    className="profile-picture"
-                    src={profilePreview}
-                    alt="pp"
-                  />
-                  <span className="image-error">{profileErrors.message}</span>
-                </>
-              ) : (
-                <>
-                  <img
-                    className="profile-picture"
-                    src={`${userData.imageUrl}`}
-                    alt="pp"
-                  />
-                  <span className="image-error">{profileErrors.message}</span>
-                </>
-              )}
-              <div
-                className="edit-picture-container"
-                style={{ display: hoverStylePicture ? 'block' : 'none' }}
-              >
-                <label
-                  htmlFor="profile-picture-preview"
-                  className="edit-picture-btn"
-                >
-                  <FaRegEdit className="edit-picture-logo" />
-                  <input
-                    id="profile-picture-preview"
-                    name="file"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfileFile}
-                  ></input>
-                  <div className="picture-aria-label">Ajouter une photo</div>
-                </label>
-              </div>
+                Annuler
+              </ButtonPoster>
+              <ButtonPoster type="submit" className="btn-enregistrer">
+                Enregistrer
+              </ButtonPoster>
             </div>
           </div>
-          <input
-            type="text"
-            placeholder="Pseudo"
-            spellCheck={false}
-            minLength={3}
-            maxLength={20}
-            onChange={(e) => setPseudo(e.target.value)}
-            value={pseudo}
-          ></input>
-          <span className="pseudo-error">{pseudoErrors.message}</span>
+        </header>
+        <ProfileSectionWrapper>
+          <ProfileSection>
+            <div className="images">
+              {userData.banner ? (
+                <div
+                  onMouseEnter={() => setHoverStyleBanner(true)}
+                  onMouseLeave={() => setHoverStyleBanner(false)}
+                  className="banner-container"
+                >
+                  {bannerPreview ? (
+                    <>
+                      <img
+                        src={bannerPreview}
+                        className="banner"
+                        alt="bannière"
+                      />
+                      <span className="image-error">
+                        {bannerErrors.message}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        className="banner"
+                        src={userData.banner}
+                        alt="bannière"
+                      />
+                      <span className="image-error">
+                        {bannerErrors.message}
+                      </span>
+                    </>
+                  )}
+                  <div
+                    style={{ display: hoverStyleBanner ? 'block' : 'none' }}
+                    className="edit-banner-container"
+                  >
+                    <label htmlFor="banner-preview" className="edit-banner-btn">
+                      <FaRegEdit className="edit-banner-logo" />
+                      <input
+                        id="banner-preview"
+                        name="file"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleBannerFile}
+                      ></input>
+                      <div className="banner-aria-label">Ajouter une photo</div>
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="banner-container"
+                  onMouseEnter={() => setHoverStyleBanner(true)}
+                  onMouseLeave={() => setHoverStyleBanner(false)}
+                >
+                  {bannerPreview ? (
+                    <>
+                      <img
+                        src={bannerPreview}
+                        className="banner"
+                        alt="bannière"
+                      />
+                      <span className="image-error">
+                        {bannerErrors.message}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: `${colors.secondary}`,
+                        }}
+                        className="banner"
+                      ></div>
+                      <span className="image-error">
+                        {bannerErrors.message}
+                      </span>
+                    </>
+                  )}
+                  <div
+                    style={{ display: hoverStyleBanner ? 'block' : 'none' }}
+                    className="edit-banner-container"
+                  >
+                    <label htmlFor="banner-preview" className="edit-banner-btn">
+                      <FaRegEdit className="edit-banner-logo" />
+                      <input
+                        id="banner-preview"
+                        name="file"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleBannerFile}
+                        // style={{ display: 'block' }}
+                      ></input>
+                      <div className="banner-aria-label">Ajouter une photo</div>
+                    </label>
+                  </div>
+                </div>
+              )}
 
-          <span className="date">A rejoint Groupomania en {date}</span>
-        </ProfileSection>
+              <div
+                className="profile-picture-container"
+                onMouseEnter={() => setHoverStylePicture(true)}
+                onMouseLeave={() => setHoverStylePicture(false)}
+              >
+                {profilePreview ? (
+                  <>
+                    <img
+                      className="profile-picture"
+                      src={profilePreview}
+                      alt="pp"
+                    />
+                    <span className="image-error">{profileErrors.message}</span>
+                  </>
+                ) : (
+                  <>
+                    <img
+                      className="profile-picture"
+                      src={`${userData.imageUrl}`}
+                      alt="pp"
+                    />
+                    <span className="image-error">{profileErrors.message}</span>
+                  </>
+                )}
+                <div
+                  className="edit-picture-container"
+                  style={{ display: hoverStylePicture ? 'block' : 'none' }}
+                >
+                  <label
+                    htmlFor="profile-picture-preview"
+                    className="edit-picture-btn"
+                  >
+                    <FaRegEdit className="edit-picture-logo" />
+                    <input
+                      id="profile-picture-preview"
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfileFile}
+                    ></input>
+                    <div className="picture-aria-label">Ajouter une photo</div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="pseudo-edit">
+              <input
+                type="text"
+                placeholder="Pseudo"
+                spellCheck={false}
+                minLength={3}
+                maxLength={20}
+                onChange={(e) => setPseudo(e.target.value)}
+                value={pseudo}
+              ></input>
+              <span className="pseudo-error">{pseudoErrors.message}</span>
+            </div>
+
+            <span className="date">A rejoint Groupomania en {date}</span>
+          </ProfileSection>
+        </ProfileSectionWrapper>
       </ProfileContent>
     </ProfileWrapper>
   )

@@ -5,46 +5,65 @@ import iconGroupomania from '../../assets/icon-groupomania.png'
 import background from '../../assets/welcome-background.jpg'
 import { ButtonPoster } from '../../utils/style/Button'
 // import colors from '../../utils/style/colors'
+// import { useState } from 'react'
 
 const WelcomeWrapper = styled.main`
   height: 100vh;
   width: 100%;
   display: flex;
-  /* flex-flow: row wrap; */
-  /* background-color: black; */
+
+  @media (max-width: 1000px) {
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    min-height: 700px;
+  }
 
   .left-side-wrapper {
-    position: relative;
-    /* background-color: red; */
-    width: 47%;
-    /* height: 91%; */
-    /* height: 100%; */
-    overflow: hidden;
+    min-height: 600px;
+    min-width: 300px;
 
-    .left-side-background {
-      height: 100%;
+    @media (max-width: 1000px) {
+      min-height: 100px;
+      max-height: 30vh;
+      /* height: 45px; */
       width: 100%;
-      object-fit: cover;
     }
 
-    .logo-groupomania {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      /* font-size: 50vw; */
-      width: 80%;
+    .left-side-container {
+      position: relative;
+      max-width: 46vw;
+      height: 100%;
+      overflow: hidden;
+
+      @media (max-width: 1000px) {
+        max-width: 100%;
+      }
+
+      .left-side-background {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      .logo-groupomania {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        /* font-size: 50vw; */
+        width: 80%;
+      }
     }
   }
 
   .right-side-wrapper {
-    /* background-color: blue; */
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 53%;
-    height: 91%;
+    min-width: 54vw;
+    height: 100%;
+
+    @media (max-width: 1000px) {
+      /* max-height: 800px; */
+    }
 
     .right-side-content {
       /* background-color: green; */
@@ -56,29 +75,40 @@ const WelcomeWrapper = styled.main`
       padding: 36px;
       box-sizing: border-box;
 
-      & > img {
-        width: 48px;
+      @media (max-width: 1000px) {
+        max-width: 600px;
+        margin: auto;
+      }
+
+      & > a {
+        width: 60px;
         height: 60px;
-        padding-bottom: 12px;
+        & > img {
+          width: 60px;
+          height: 60px;
+          padding-bottom: 12px;
+        }
       }
 
       & > h1 {
         font-size: 64px;
         margin: 48px 0;
+
+        @media (max-width: 500px) {
+          font-size: 32px;
+        }
       }
 
       & > h2 {
         font-size: 31px;
         margin: 0;
         margin-bottom: 32px;
+
+        @media (max-width: 500px) {
+          font-size: 22px;
+        }
       }
     }
-  }
-
-  .footer-content {
-    /* background-color: black; */
-    height: 9%;
-    width: 100%;
   }
 `
 
@@ -87,7 +117,10 @@ const LinksContent = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
-  width: 300px;
+  max-width: 300px;
+
+  @media (max-width: 500px) {
+  }
 
   .singup-link {
     & > button {
@@ -118,12 +151,20 @@ function Welcome() {
   return (
     <WelcomeWrapper>
       <div className="left-side-wrapper">
-        <img className="left-side-background" src={background} alt="fond" />
-        <img className="logo-groupomania" src={groupomania} alt="entreprise" />
+        <div className="left-side-container">
+          <img className="left-side-background" src={background} alt="fond" />
+          <img
+            className="logo-groupomania"
+            src={groupomania}
+            alt="entreprise"
+          />
+        </div>
       </div>
       <div className="right-side-wrapper">
         <div className="right-side-content">
-          <img src={iconGroupomania} alt="zefn" />
+          <a href="/home">
+            <img src={iconGroupomania} alt="zefn" />
+          </a>
           <h1>Bienvenue !</h1>
           <h2>Rejoignez Groupomania dès aujourd'hui.</h2>
           <LinksContent>

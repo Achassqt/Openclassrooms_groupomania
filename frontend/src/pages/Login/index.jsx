@@ -3,13 +3,6 @@ import Log from '../../components/Log'
 import { useState } from 'react'
 import axios from 'axios'
 
-const LoginWrapper = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background-color: rgba(91, 112, 131, 0.4);
-`
-
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -66,17 +59,15 @@ function Login() {
   ]
 
   return (
-    <LoginWrapper>
-      <Log
-        title="Connectez-vous à Groupomania"
-        btnName="Se connecter"
-        question="Vous n'avez pas de compte ?"
-        link="/signup"
-        linkName="Inscrivez-vous"
-        handleFunction={handleLogin}
-        mapForm={loginForm}
-      />
-    </LoginWrapper>
+    <Log
+      title="Connectez-vous à Groupomania"
+      btnName="Se connecter"
+      question="Vous n'avez pas de compte ?"
+      link="/signup"
+      linkName="Inscrivez-vous"
+      handleFunction={handleLogin}
+      mapForm={loginForm}
+    />
   )
 }
 

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Welcome from './pages/Welcome'
@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
 const App = () => {
   const [uid, setUid] = useState(null)
   const [userRole, setUserRole] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -39,18 +39,34 @@ const App = () => {
     fetchToken()
   }, [uid])
 
+  // const navigate = useNavigate()
+
+  // useEffect(() => {
+  //   if (uid) {
+  //     return navigate('/home')
+  //   }
+  // }, [uid])
+
   return (
     <BrowserRouter>
       <Context.Provider value={{ uid, userRole, isLoading, setIsLoading }}>
         <GlobalStyle />
         <Routes>
-          <Route path="/" element={<Welcome />}>
+          <Route
+            path="/"
+            element={
+              uid === null ? <Welcome /> : <Navigate to="/home" replace />
+            }
+          >
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
           </Route>
+
           <Route path="home" element={<Home />}>
             <Route path="profile" element={<Profile />} />
           </Route>
+
+          <Route path="*" element={<Navigate to="home" replace />} />
         </Routes>
       </Context.Provider>
     </BrowserRouter>

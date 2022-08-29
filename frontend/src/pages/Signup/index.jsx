@@ -3,13 +3,6 @@ import Log from '../../components/Log'
 import axios from 'axios'
 import { useState } from 'react'
 
-const SignupWrapper = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  background-color: rgba(91, 112, 131, 0.4);
-`
-
 function Signup() {
   const [pseudo, setPseudo] = useState('')
   const [email, setEmail] = useState('')
@@ -95,17 +88,15 @@ function Signup() {
     },
   ]
   return (
-    <SignupWrapper>
-      <Log
-        title="Créer votre compte"
-        btnName="S'inscrire"
-        question="Vous avez déjà un compte ?"
-        link="/login"
-        linkName="Connectez-vous"
-        handleFunction={handleSignup}
-        mapForm={signupForm}
-      />
-    </SignupWrapper>
+    <Log
+      title="Créer votre compte"
+      btnName="S'inscrire"
+      question="Vous avez déjà un compte ?"
+      link="/login"
+      linkName="Connectez-vous"
+      handleFunction={handleSignup}
+      mapForm={signupForm}
+    />
   )
 }
 

@@ -2,14 +2,14 @@ import styled from 'styled-components'
 import colors from './colors'
 
 const Spinner = styled.span`
-  width: 48px;
-  height: 48px;
-  border: 5px solid ${colors.secondary};
+  width: 35px;
+  height: 35px;
+  border: 4px solid ${colors.secondary};
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;
-  animation: rotation 0.8s linear infinite;
+  animation: rotation 600ms linear infinite;
 
   @keyframes rotation {
     0% {
@@ -22,7 +22,7 @@ const Spinner = styled.span`
 `
 
 function Loader() {
-  return <Spinner class="loader"></Spinner>
+  return <Spinner></Spinner>
 }
 
 export default Loader

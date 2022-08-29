@@ -1,5 +1,7 @@
-import { BsStars } from 'react-icons/bs'
+import { useContext } from 'react'
+import { BsStars, BsList } from 'react-icons/bs'
 import styled from 'styled-components'
+import { Context } from '../../utils/AppContext'
 import colors from '../../utils/style/colors'
 
 const StyledHeader = styled.header`
@@ -8,31 +10,47 @@ const StyledHeader = styled.header`
   align-items: center;
   padding: 0 16px;
   color: white;
-  /* backdrop-filter: blur(15px); */
-  /* background-color: rgb(0, 0, 0, 0.85); */
-  background-color: ${colors.tertiary};
+  backdrop-filter: blur(5px);
+  background-color: ${colors.tertiary}99;
   font-weight: 700;
   font-size: 20px;
   min-height: 53px;
-  position: fixed;
+  position: sticky;
   top: 0;
-  max-width: 600px;
-  width: 600px;
   box-sizing: border-box;
-  border-left: solid 1px ${colors.secondary};
-  border-right: solid 1px ${colors.secondary};
+  /* border-left: solid 1px ${colors.secondary};
+  border-right: solid 1px ${colors.secondary}; */
   z-index: 1;
 
-  & span:last-of-type {
+  & > div {
+    display: flex;
+    align-items: center;
+
+    & > svg {
+      display: none;
+      font-size: 25px;
+      margin-right: 35px;
+      cursor: pointer;
+
+      @media (max-width: 500px) {
+        display: block;
+      }
+    }
+  }
+
+  .stars {
     font-size: 25px;
   }
 `
 
-function Header() {
+function Header({ setSideBarResponsive }) {
   return (
     <StyledHeader>
-      <span>Accueil</span>
-      <span>
+      <div>
+        <BsList onClick={() => setSideBarResponsive(true)} />
+        <span>Accueil</span>
+      </div>
+      <span className="stars">
         <BsStars />
       </span>
     </StyledHeader>
