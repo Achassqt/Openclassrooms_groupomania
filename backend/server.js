@@ -23,8 +23,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-//jwt
-// app.get("*", checkUser);
+//jwt (vérification token)
 app.get("/jwtid", checkUser, getToken, (req, res) => {
   res
     .status(200)

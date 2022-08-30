@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { signupErrors, loginErrors } = require("../utils/errors.utils");
 
+//*
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = ({ userId, userRole }) => {
   return jwt.sign({ userId, userRole }, process.env.TOKEN_SECRET, {
@@ -9,6 +10,7 @@ const createToken = ({ userId, userRole }) => {
   });
 };
 
+//création User
 exports.signup = async (req, res) => {
   const { pseudo, email, password } = req.body;
 
@@ -20,19 +22,17 @@ exports.signup = async (req, res) => {
       imageUrl: `${req.protocol}://${req.get(
         "host"
       )}/uploads/images/profil/random-user.png`,
-      // banner: `${req.protocol}://${req.get(
-      //   "host"
-      // )}/uploads/images/profil/banner/default-banner.png`,
     });
     res.status(201).json({ user: user._id });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     const errors = signupErrors(err);
     res.status(200).send({ errors });
     // res.status(200).send(err);
   }
 };
 
+//compare mdp reçu et mdp db / création token
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 

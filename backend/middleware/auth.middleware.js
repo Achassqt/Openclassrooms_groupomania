@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+//vérification du token et retourne les infos du user dans res.locals.user
 exports.checkUser = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
@@ -22,17 +23,18 @@ exports.checkUser = (req, res, next) => {
   }
 };
 
+//vérification du token et retourne userRole et userId
 exports.getToken = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (err, decodedToken) => {
-      const userId = decodedToken.userId;
-      const userRole = decodedToken.userRole;
+      // const userId = decodedToken.userId;
+      // const userRole = decodedToken.userRole;
       if (err) {
-        console.log(err);
+        // console.log(err);
         res.send(200).json("no token");
       } else {
-        console.log({ userId, userRole });
+        // console.log({ userId, userRole });
         next();
       }
     });

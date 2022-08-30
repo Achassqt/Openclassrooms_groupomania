@@ -1,18 +1,15 @@
 import styled from 'styled-components'
-import colors from '../../utils/style/colors'
+import colors from '../../../../utils/style/colors'
 
-import Modal from '../../utils/style/Modal'
+import Modal from '../../../../utils/Modal'
 
-import { useContext, useState } from 'react'
-import { Context } from '../../utils/AppContext'
+import { useContext, useState, useEffect } from 'react'
+import { Context } from '../../../../utils/AppContext'
 import axios from 'axios'
-import { useEffect } from 'react'
 
 const CommentContainer = styled.li`
   display: flex;
   width: 100%;
-  /* padding: 12px 16px; */
-  /* padding-top: 12px; */
   padding-top: 12px;
   padding-bottom: 5px;
   border-bottom: solid 1px ${colors.secondary};
@@ -33,8 +30,6 @@ const CommentContainer = styled.li`
     display: flex;
     flex-direction: column;
     flex: 1;
-    /* padding-bottom: 12px; */
-    max-width: 505px;
   }
 `
 
@@ -45,7 +40,6 @@ const CommentHeader = styled.header`
   align-items: center;
   color: white;
   font-size: 15px;
-  /* height: 22px; */
 
   .header-left {
     .user-pseudo {
@@ -73,6 +67,7 @@ const CommentText = styled.div`
 
 function Comments({ post, usersData, comment }) {
   const { uid, userRole, setGetPosts, userDeleted } = useContext(Context)
+
   const [editComment, setEditComment] = useState(false)
 
   const [oldUser, setOldUser] = useState(false)

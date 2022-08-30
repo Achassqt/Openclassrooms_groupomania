@@ -1,13 +1,13 @@
 import styled from 'styled-components'
+import colors from '../../utils/style/colors'
+
+import { MdEdit } from 'react-icons/md'
+import { Outlet } from 'react-router-dom'
+
 import SideBar from '../../components/SideBar'
 import CreatePost from '../../components/CreatePost'
 import Feed from '../../components/Feed'
-// import Widgets from '../../components/Widgets'
-// import Search from '../../components/Search'
 import Header from '../../components/Header'
-import { MdEdit } from 'react-icons/md'
-import { Outlet } from 'react-router-dom'
-import colors from '../../utils/style/colors'
 
 import { useState, useEffect, useContext } from 'react'
 import { Context } from '../../utils/AppContext'
@@ -17,15 +17,11 @@ const HomeWrapper = styled.div`
   position: relative;
   height: 100vh;
   display: flex;
-  /* overflow-x: hidden; */
-  /* background-color: black; */
 `
 
 const LeftWrapper = styled.div`
-  /* position: relative; */
   min-width: 251px;
   height: 100%;
-  /* background-color: black; */
   display: flex;
   justify-content: flex-end;
   flex-grow: 1;
@@ -49,7 +45,7 @@ const CenterWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1.5;
   min-width: 600px;
-  /* min-width: 320px; */
+  max-width: 700px;
 
   @media (max-width: 768px) {
     min-width: 320px;

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import colors from './colors'
+import colors from './style/colors'
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
 import { IoEllipsisHorizontalSharp, IoCloseOutline } from 'react-icons/io5'
 

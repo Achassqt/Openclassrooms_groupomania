@@ -1,29 +1,26 @@
 import styled from 'styled-components'
-import colors from '../../utils/style/colors'
+import colors from '../../../utils/style/colors'
 import { TbMessageCircle2 } from 'react-icons/tb'
 
-import Comment from '../Comment'
-import Like from '../Like'
-import Modal from '../../utils/style/Modal'
-import { ButtonPoster } from '../../utils/style/Button'
+import Comment from './Comment'
+import Like from './Like'
+import Modal from '../../../utils/Modal'
+import { Button } from '../../../utils/Button'
 
 import { useState, useEffect, useContext, useRef } from 'react'
 import axios from 'axios'
-import { Context } from '../../utils/AppContext'
-import CreateComment from '../CreateComment'
+import { Context } from '../../../utils/AppContext'
+import CreateComment from './CreateComment'
 
-const FeedPost = styled.li`
+const PostContainer = styled.li`
   display: flex;
   border-bottom: solid 0.5px ${colors.secondary};
-  /* border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary}; */
   padding: 0 16px;
   padding-top: 12px;
-  /* min-height: 100px; */
   box-sizing: border-box;
 `
 
-const FeedPostLeft = styled.div`
+const PostLeft = styled.div`
   margin-right: 13px;
 
   img {
@@ -34,15 +31,14 @@ const FeedPostLeft = styled.div`
   }
 `
 
-const FeedPostRight = styled.div`
+const PostRight = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   padding-bottom: 12px;
-  /* max-width: 505px; */
 `
 
-const FeedPostHeader = styled.div`
+const PostHeader = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -50,7 +46,6 @@ const FeedPostHeader = styled.div`
   color: white;
   font-size: 15px;
   padding-bottom: 4px;
-  /* height: 22px; */
 
   .header-left {
     display: flex;
@@ -87,7 +82,6 @@ const FeedPostHeader = styled.div`
 
     &:hover {
       color: ${colors.secondary};
-      /* background-color: ${colors.hoverPrimary}30; */
       background-color: ${colors.hoverTertiary};
     }
   }
@@ -105,13 +99,11 @@ const FeedPostHeader = styled.div`
 
     &:hover {
       color: ${colors.secondary};
-      /* background-color: ${colors.hoverPrimary}30; */
       background-color: ${colors.hoverTertiary};
     }
   }
 
   .modal-container {
-    /* background-color: blue; */
     background-color: ${colors.tertiary};
     position: absolute;
     right: 0;
@@ -191,7 +183,7 @@ const FeedPostHeader = styled.div`
   }
 `
 
-const FeedPostText = styled.div`
+const PostText = styled.div`
   color: white;
   font-size: 15px;
   margin-top: 3px;
@@ -216,7 +208,6 @@ const FeedPostText = styled.div`
     background-color: ${colors.hoverTertiary};
     border-bottom: 1px solid ${colors.primary};
     border-radius: 5px 5px 0 0;
-    /* border-radius: 16px; */
     box-sizing: border-box;
 
     :focus {
@@ -225,17 +216,16 @@ const FeedPostText = styled.div`
   }
 
   .edit-btn {
-    font-size: 15px;
+    /* font-size: 15px; */
     padding: 5px 16px;
     margin-top: 5px;
   }
 `
 
-const FeedPostImage = styled.div`
+const PostImage = styled.div`
   margin-top: 14px;
   display: flex;
   justify-content: flex-start;
-  /* box-sizing: border-box; */
 
   img {
     border-radius: 16px;
@@ -248,7 +238,7 @@ const FeedPostImage = styled.div`
   }
 `
 
-const FeedPostIcons = styled.div`
+const PostIcons = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 1.25em;
@@ -290,23 +280,31 @@ const FeedPostIcons = styled.div`
 
 const CommentsContainer = styled.ul`
   margin: 0;
-  /* border-right: solid 1px ${colors.secondary};
-  border-left: solid 1px ${colors.secondary}; */
-  border-bottom: double 3px ${colors.secondary};
-  padding: 16px;
-  padding-top: 0;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  /* & > :last-child {
+  & > :last-child {
     border: none;
-  } */
+  }
+`
+
+const Footer = styled.footer`
+  width: 100%;
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  border-top: solid 0.5px ${colors.secondary};
+  border-bottom: double 3px ${colors.secondary};
+  cursor: pointer;
+
+  :hover {
+    background-color: ${colors.hoverTertiary};
+  }
 
   .close-comments {
     color: ${colors.primary};
-    margin-top: 16px;
-
     cursor: pointer;
 
     :hover {
@@ -321,30 +319,6 @@ function Post({ post, usersData }) {
 
   const [editPost, setEditPost] = useState(false)
   const [textEdit, setTextEdit] = useState(null)
-
-  // const [usersData, setUsersData] = useState({})
-  // const [getAllUsersData, setGetAllUsersData] = useState(true)
-
-  // useEffect(() => {
-  //   // setGetAllUsersData(true)
-  //   if (getAllUsersData) {
-  //     const getAllUsers = async () => {
-  //       await axios({
-  //         method: 'get',
-  //         url: `${process.env.REACT_APP_API_URL}api/user/`,
-  //         withCredentials: true,
-  //       })
-  //         .then((res) => {
-  //           console.log(res)
-  //           setUsersData(res.data)
-  //         })
-  //         .catch((err) => console.log(err))
-  //     }
-  //     getAllUsers()
-  //     // setIsLoading(false)
-  //     // setGetAllUsersData(false)
-  //   }
-  // }, [getAllUsersData])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -400,6 +374,7 @@ function Post({ post, usersData }) {
     return date.toString()
   }
 
+  //Focus textarea
   const textFocus = useRef(null)
 
   useEffect(() => {
@@ -412,13 +387,13 @@ function Post({ post, usersData }) {
 
   return (
     <>
-      <FeedPost
+      <PostContainer
         id="test"
         key={post._id}
         style={{ borderBottom: showComments && 'none' }}
       >
         {showComments === false && (
-          <FeedPostLeft>
+          <PostLeft>
             <img
               src={
                 !isEmpty(usersData[0]) &&
@@ -431,15 +406,15 @@ function Post({ post, usersData }) {
               }
               alt="poster-pp"
             />
-          </FeedPostLeft>
+          </PostLeft>
         )}
-        <FeedPostRight
+        <PostRight
           style={{
             width: showComments && '100%',
             paddingBottom: showComments && '0',
           }}
         >
-          <FeedPostHeader>
+          <PostHeader>
             <div className="header-left">
               {showComments && (
                 <img
@@ -492,8 +467,8 @@ function Post({ post, usersData }) {
                 />
               </div>
             ) : null}
-          </FeedPostHeader>
-          <FeedPostText>
+          </PostHeader>
+          <PostText>
             {editPost === false && (
               <p
                 style={{ fontSize: showComments && '23px' }}
@@ -514,13 +489,13 @@ function Post({ post, usersData }) {
               className="edit-text"
             />
             {editPost && (
-              <ButtonPoster onClick={handleSubmit} className="edit-btn">
+              <Button onClick={handleSubmit} className="edit-btn">
                 Modifier
-              </ButtonPoster>
+              </Button>
             )}
-          </FeedPostText>
+          </PostText>
           {post.imageUrl && (
-            <FeedPostImage style={{ justifyContent: showComments && 'center' }}>
+            <PostImage style={{ justifyContent: showComments && 'center' }}>
               <img
                 src={post.imageUrl}
                 style={{
@@ -529,10 +504,10 @@ function Post({ post, usersData }) {
                 }}
                 alt="img"
               />
-            </FeedPostImage>
+            </PostImage>
           )}
           {showComments === false ? (
-            <FeedPostIcons>
+            <PostIcons>
               <div
                 onClick={() => setShowComments(!showComments)}
                 className="post-icon-container"
@@ -543,9 +518,9 @@ function Post({ post, usersData }) {
                 <span>{post.comments.length}</span>
               </div>
               <Like post={post} />
-            </FeedPostIcons>
+            </PostIcons>
           ) : (
-            <FeedPostIcons
+            <PostIcons
               style={{
                 width: '100%',
                 justifyContent: 'space-evenly',
@@ -566,10 +541,10 @@ function Post({ post, usersData }) {
                 <span>{post.comments.length}</span>
               </div>
               <Like post={post} />
-            </FeedPostIcons>
+            </PostIcons>
           )}
-        </FeedPostRight>
-      </FeedPost>
+        </PostRight>
+      </PostContainer>
       {showComments && (
         <>
           <CreateComment post={post} />
@@ -581,13 +556,10 @@ function Post({ post, usersData }) {
                 <Comment post={post} usersData={usersData} comment={comment} />
               )
             })}
-            <span
-              onClick={() => setShowComments(false)}
-              className="close-comments"
-            >
-              Fermer
-            </span>
           </CommentsContainer>
+          <Footer onClick={() => setShowComments(false)}>
+            <span className="close-comments">Fermer</span>
+          </Footer>
         </>
       )}
     </>

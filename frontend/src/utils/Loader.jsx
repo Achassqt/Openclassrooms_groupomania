@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import colors from './colors'
+import colors from './style/colors'
 
 const Spinner = styled.span`
   width: 35px;

@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import colors from './colors'
+import colors from './style/colors'
 
-export const ButtonPoster = styled.button`
+export const Button = styled.button`
   /* width: 225px;
   height: 52px; */
-  font-family: 'Roboto';
+  font-family: 'Lato';
   border-radius: 9999px;
   background-color: ${colors.primary};
   color: white;

@@ -43,25 +43,6 @@ exports.readPost = (req, res) => {
   }).sort({ createdAt: -1 });
 };
 
-// exports.updatePost = (req, res) => {
-//   if (!ObjectId.isValid(req.params.id))
-//     return res.status(400).send("Id unknown : " + req.params.id);
-
-//   const updatedPost = {
-//     message: req.body.message,
-//   };
-
-//   Post.findOneAndUpdate(
-//     req.params.id,
-//     { $set: updatedPost },
-//     { new: true },
-//     (err, docs) => {
-//       if (!err) res.send(docs);
-//       else console.log("Update error : " + err);
-//     }
-//   );
-// };
-
 exports.updatePost = (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Id unknown : " + req.params.id);
@@ -235,37 +216,6 @@ exports.commentPost = (req, res) => {
     return res.status(500).json(err);
   }
 };
-
-// exports.editCommentPost = (req, res) => {
-//   if (!ObjectId.isValid(req.params.id))
-//     return res.status(400).send("Id unknown : " + req.params.id);
-
-//   try {
-//     return Post.findById(req.params.id, (err, docs) => {
-//       const theComment = docs.comments.find((comment) =>
-//         comment._id.equals(req.body.commentId)
-//       );
-
-//       if (!theComment) {
-//         return res.status(404).send("Comment not found");
-//       } else {
-//         if (
-//           theComment.commenterId === res.locals.user._id.valueOf() ||
-//           res.locals.user.role === "admin"
-//         ) {
-//           theComment.text = req.body.text;
-//         }
-//       }
-
-//       return docs.save((err) => {
-//         if (!err) return res.status(200).send(docs);
-//         return res.status(500).send(err);
-//       });
-//     });
-//   } catch (err) {
-//     return res.status(400).send(err);
-//   }
-// };
 
 exports.deleteCommentPost = (req, res) => {
   if (!ObjectId.isValid(req.params.id))

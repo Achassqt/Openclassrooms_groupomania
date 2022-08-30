@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import Log from '../../components/Log'
+// import styled from 'styled-components'
+import Log from '../../../components/Log'
 import axios from 'axios'
 import { useState } from 'react'
 
@@ -8,6 +8,7 @@ function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [controlPassword, setControlPassword] = useState('')
+
   const [pseudoError, setPseudoError] = useState()
   const [emailError, setEmailError] = useState()
   const [passwordError, setPasswordError] = useState()
@@ -16,12 +17,8 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault()
 
-    setControlPasswordError({ __html: '' })
-
     if (password !== controlPassword) {
-      setControlPasswordError({
-        __html: 'Les mots de passe ne correspondent pas',
-      })
+      setControlPasswordError('Les mots de passe ne correspondent pas')
     } else {
       await axios({
         method: 'post',
@@ -35,14 +32,11 @@ function Signup() {
       })
         .then((res) => {
           console.log(res)
-          if (res.data.errors) {
-            const pseudoDataError = res.data.errors.pseudo
-            const emailDataError = res.data.errors.email
-            const passwordDataError = res.data.errors.password
 
-            setPseudoError({ __html: pseudoDataError })
-            setEmailError({ __html: emailDataError })
-            setPasswordError({ __html: passwordDataError })
+          if (res.data.errors) {
+            setPseudoError(res.data.errors.pseudo)
+            setEmailError(res.data.errors.email)
+            setPasswordError(res.data.errors.password)
           } else {
             window.location = '/login'
           }
@@ -53,14 +47,14 @@ function Signup() {
     }
   }
 
-  const signupForm = [
+  const signupInputs = [
     {
       type: 'text',
       name: 'pseudo',
       placeholder: 'Pseudo',
       onChange: (e) => setPseudo(e.target.value),
       value: pseudo,
-      dangerouslySetInnerHTML: pseudoError,
+      error: pseudoError,
     },
     {
       type: 'text',
@@ -68,7 +62,7 @@ function Signup() {
       placeholder: 'Email',
       onChange: (e) => setEmail(e.target.value),
       value: email,
-      dangerouslySetInnerHTML: emailError,
+      error: emailError,
     },
     {
       type: 'password',
@@ -76,7 +70,7 @@ function Signup() {
       placeholder: 'Mot de passe',
       onChange: (e) => setPassword(e.target.value),
       value: password,
-      dangerouslySetInnerHTML: passwordError,
+      error: passwordError,
     },
     {
       type: 'password',
@@ -84,7 +78,7 @@ function Signup() {
       placeholder: 'Confirmer mot de passe',
       onChange: (e) => setControlPassword(e.target.value),
       value: controlPassword,
-      dangerouslySetInnerHTML: controlPasswordError,
+      error: controlPasswordError,
     },
   ]
   return (
@@ -95,7 +89,7 @@ function Signup() {
       link="/login"
       linkName="Connectez-vous"
       handleFunction={handleSignup}
-      mapForm={signupForm}
+      logInput={signupInputs}
     />
   )
 }

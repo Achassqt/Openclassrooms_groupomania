@@ -1,13 +1,10 @@
-// import styled from 'styled-components'
-
-import axios from 'axios'
+import CreateForm from '../CreateForm'
 import { useContext, useState } from 'react'
 import { Context } from '../../utils/AppContext'
-import FormPost from '../FormPost'
+import axios from 'axios'
 
 function CreatePost({ setGetPosts }) {
   const { uid } = useContext(Context)
-
   const postForm = true
 
   const [message, setMessage] = useState(null)
@@ -38,7 +35,7 @@ function CreatePost({ setGetPosts }) {
   }
 
   return (
-    <FormPost
+    <CreateForm
       postHandleSubmit={handleSubmit}
       setMessage={setMessage}
       postPicture={postPicture}

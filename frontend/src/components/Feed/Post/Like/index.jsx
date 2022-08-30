@@ -1,8 +1,8 @@
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import styled from 'styled-components'
-import colors from '../../utils/style/colors'
+import colors from '../../../../utils/style/colors'
 import { useState, useEffect, useContext } from 'react'
-import { Context } from '../../utils/AppContext'
+import { Context } from '../../../../utils/AppContext'
 import axios from 'axios'
 
 const LikeContainer = styled.div`

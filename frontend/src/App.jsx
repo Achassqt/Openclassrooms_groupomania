@@ -1,9 +1,9 @@
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import Profile from './pages/Profile'
+import Profile from './pages/Home/Profile'
 import Welcome from './pages/Welcome'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
+import Signup from './pages/Welcome/Signup'
+import Login from './pages/Welcome/Login'
 import { createGlobalStyle } from 'styled-components'
 import colors from './utils/style/colors'
 import { Context } from './utils/AppContext'
@@ -11,9 +11,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const GlobalStyle = createGlobalStyle`
-  body{
+  body {
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Lato', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     background-color: ${colors.tertiary}
   }
 `

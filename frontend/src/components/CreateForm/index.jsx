@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ButtonPoster } from '../../utils/style/Button.jsx'
+import { Button } from '../../utils/Button.jsx'
 import { BsImage } from 'react-icons/bs'
 import { IoCloseOutline } from 'react-icons/io5'
 import colors from '../../utils/style/colors'
@@ -57,7 +57,7 @@ const CreatePostRight = styled.form`
   }
 
   .post-text {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Lato', sans-serif;
     font-size: 20px;
     background: none;
     color: white;
@@ -183,7 +183,7 @@ const CreatePostBottom = styled.div`
     }
   }
 
-  ${ButtonPoster} {
+  ${Button} {
     width: 100px;
     height: 36px;
     font-weight: 700;
@@ -202,7 +202,6 @@ function FormPost({
   setFile,
 
   postForm,
-  //   setPostForm,
 
   commentForm,
   setCommentForm,
@@ -295,8 +294,6 @@ function FormPost({
         <p
           onClick={() => {
             setCreatePost(true)
-            // document.querySelector('.post-text').focus()
-            // document.querySelector('.post-text').value = ''
             if (commentForm) {
               setCommentForm(false)
               setIsActive(true)
@@ -380,20 +377,16 @@ function FormPost({
 
           <div>
             {createPost || postPicture || imageError ? (
-              <ButtonPoster
+              <Button
                 type="button"
                 onClick={() => {
                   cancelPost()
-                  // if (commentForm === false) {
-                  //   setCommentForm(true)
-                  //   setIsActive(false)
-                  // }
                 }}
               >
                 Annuler
-              </ButtonPoster>
+              </Button>
             ) : null}
-            <ButtonPoster type="submit">Poster</ButtonPoster>
+            <Button type="submit">Poster</Button>
           </div>
         </CreatePostBottom>
       </CreatePostRight>

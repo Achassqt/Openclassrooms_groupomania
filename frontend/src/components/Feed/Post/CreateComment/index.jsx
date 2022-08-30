@@ -1,13 +1,12 @@
-// import styled from 'styled-components'
-
 import { useContext, useState } from 'react'
-import { Context } from '../../utils/AppContext'
+import { Context } from '../../../../utils/AppContext'
 import axios from 'axios'
 
-import FormPost from '../FormPost'
+import CreateForm from '../../../CreateForm'
 
 function CreateComment({ post }) {
   const { uid, setGetPosts, userData } = useContext(Context)
+
   const [commentForm, setCommentForm] = useState(true)
   const [message, setMessage] = useState(null)
 
@@ -33,7 +32,7 @@ function CreateComment({ post }) {
   }
 
   return (
-    <FormPost
+    <CreateForm
       commentForm={commentForm}
       setCommentForm={setCommentForm}
       setMessage={setMessage}

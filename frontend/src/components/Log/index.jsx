@@ -1,9 +1,11 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import { IoCloseOutline } from 'react-icons/io5'
-import { ButtonPoster } from '../../utils/style/Button'
-import iconGroupomania from '../../assets/icon-groupomania.png'
 import colors from '../../utils/style/colors'
+
+import { IoCloseOutline } from 'react-icons/io5'
+import iconGroupomania from '../../assets/icon-groupomania.png'
+
+import { Button } from '../../utils/Button'
+import { Link } from 'react-router-dom'
 
 const LogWrapper = styled.div`
   position: fixed;
@@ -13,15 +15,9 @@ const LogWrapper = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${colors.hoverTertiary}99;
-
-  @media (max-width: 704px) {
-    /* background-color: ${colors.tertiary}; */
-    /* min-height: 500px;
-    overflow: auto; */
-  }
 `
 
-const LoginContent = styled.article`
+const LogContent = styled.article`
   background-color: ${colors.tertiary};
   height: 650px;
   min-height: 300px;
@@ -89,7 +85,7 @@ const LoginContent = styled.article`
   }
 `
 
-const LoginWrapper = styled.div`
+const LogSectionWrapper = styled.div`
   overflow: auto;
   height: 100%;
 
@@ -98,7 +94,7 @@ const LoginWrapper = styled.div`
   }
 `
 
-const LoginSection = styled.section`
+const LogSection = styled.section`
   width: 370px;
   margin: 0 auto;
   padding: 0 32px;
@@ -168,22 +164,22 @@ const LoginSection = styled.section`
 `
 
 function Log(props) {
-  const mapForm = props.mapForm
+  const logInput = props.logInput
 
   return (
     <LogWrapper>
-      <LoginContent>
+      <LogContent>
         <header>
           <Link onClick={() => props.setStopScroll(false)} to="/">
             <IoCloseOutline />
           </Link>
           <img src={iconGroupomania} alt="fezf" />
         </header>
-        <LoginWrapper>
-          <LoginSection>
+        <LogSectionWrapper>
+          <LogSection>
             <h2>{props.title}</h2>
             <form onSubmit={props.handleFunction}>
-              {mapForm.map((data, index) => (
+              {logInput.map((data, index) => (
                 <div className="input-container" key={index}>
                   <input
                     type={data.type}
@@ -193,21 +189,18 @@ function Log(props) {
                     value={data.value}
                     spellCheck="false"
                   ></input>
-                  <div
-                    className="email error"
-                    dangerouslySetInnerHTML={data.dangerouslySetInnerHTML}
-                  ></div>
+                  <div className="email error">{data.error}</div>
                 </div>
               ))}
-              <ButtonPoster type="submit">{props.btnName}</ButtonPoster>
+              <Button type="submit">{props.btnName}</Button>
             </form>
 
             <span>
               {props.question} <Link to={props.link}>{props.linkName}</Link>
             </span>
-          </LoginSection>
-        </LoginWrapper>
-      </LoginContent>
+          </LogSection>
+        </LogSectionWrapper>
+      </LogContent>
     </LogWrapper>
   )
 }

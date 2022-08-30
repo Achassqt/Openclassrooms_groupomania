@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema(
     },
     banner: {
       type: String,
-      // default: "./uploads/images/profil/banner/default-banner.png",
     },
     likes: {
       type: [String],
@@ -50,13 +49,14 @@ const userSchema = new mongoose.Schema(
 
 userSchema.plugin(uniqueValidator, { message: "{PATH} déjà pris" });
 
-// function qui se déclanche avant la sauvegarde de userSchema
+// function qui crypte le mdp (se déclanche avant la sauvegarde de userSchema)
 userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
+//compare mdp reçu et mdp enregistré
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (user) {

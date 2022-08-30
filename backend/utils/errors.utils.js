@@ -8,12 +8,6 @@ exports.signupErrors = (err) => {
   if (err.errors.password)
     errors.password = "Le mot de passe doit faire 6 caractères minimum";
 
-  // if (err.errors.pseudo.message.includes("pris"))
-  //   errors.pseudo = "Pseudo déjà pris";
-
-  // if (err.errors.email.message.includes("pris"))
-  //   errors.email = "Email déjà enregistré";
-
   return errors;
 };
 

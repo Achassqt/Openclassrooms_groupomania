@@ -1,20 +1,17 @@
 import styled from 'styled-components'
-import colors from '../../utils/style/colors'
 
 import NoPost from '../../assets/Social Media_Flatline.svg'
 
-import Post from '../Post'
+import Post from './Post'
 
 import { useState, useEffect, useContext } from 'react'
 import { Context } from '../../utils/AppContext'
 import axios from 'axios'
-import Loader from '../../utils/style/Loader'
+import Loader from '../../utils/Loader'
 
 const FeedWrapper = styled.ul`
   margin: 0;
   padding: 0;
-  /* box-sizing: border-box; */
-  /* animation: opacity 500ms ease-out; */
 
   @keyframes opacity {
     0% {
@@ -29,9 +26,6 @@ const FeedWrapper = styled.ul`
   }
 
   .no-posts {
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
     max-width: 500px;
     margin: 32px auto;
 
@@ -49,13 +43,11 @@ const FeedWrapper = styled.ul`
 
       & > :first-child {
         margin: 0;
-        /* width: 50%; */
         font-size: 31px;
         font-weight: bold;
       }
 
       & > :last-child {
-        /* width: 50%; */
         text-align: right;
       }
     }
@@ -64,7 +56,6 @@ const FeedWrapper = styled.ul`
 
 const LoaderContainer = styled.div`
   width: 100%;
-
   display: flex;
   justify-content: center;
   margin-top: 40px;
@@ -82,18 +73,7 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
   } = useContext(Context)
 
   const [usersData, setUsersData] = useState({})
-  const [getAllUsersData, setGetAllUsersData] = useState(true)
-
-  const [count, setCount] = useState(5)
-
-  const loadMore = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 1 >
-      document.scrollingElement.scrollHeight
-    ) {
-      setGetPosts(true)
-    }
-  }
+  // const [getAllUsersData, setGetAllUsersData] = useState(true)
 
   useEffect(() => {
     if (getPosts || onlyUserPosts || onlyUserPosts === false) {
@@ -104,41 +84,36 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
           withCredentials: true,
         })
           .then((res) => {
-            const array = res.data.slice(0, count)
-            setPosts(array)
-            // console.log('ici', array)
+            setPosts(res.data)
           })
           .catch((err) => console.log(err))
         setIsLoading(false)
       }
       getAllPosts()
       setGetPosts(false)
-      setCount(count + 5)
     }
 
-    window.addEventListener('scroll', loadMore)
-    return () => window.removeEventListener('scroll', loadMore)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getPosts, onlyUserPosts])
 
   useEffect(() => {
-    setGetAllUsersData(true)
-    if (getAllUsersData) {
-      const getAllUsers = async () => {
-        await axios({
-          method: 'get',
-          url: `${process.env.REACT_APP_API_URL}api/user/`,
-          withCredentials: true,
+    // if (getAllUsersData) {
+    const getAllUsers = async () => {
+      await axios({
+        method: 'get',
+        url: `${process.env.REACT_APP_API_URL}api/user/`,
+        withCredentials: true,
+      })
+        .then((res) => {
+          console.log(res)
+          setUsersData(res.data)
         })
-          .then((res) => {
-            console.log(res)
-            setUsersData(res.data)
-          })
-          .catch((err) => console.log(err))
-      }
-      getAllUsers()
-      // setGetAllUsersData(false)
+        .catch((err) => console.log(err))
+      //   setGetAllUsersData(false)
+      // }
     }
-  }, [getAllUsersData, setIsLoading])
+    getAllUsers()
+  }, [])
 
   const isEmpty = (value) => {
     return (
@@ -151,8 +126,6 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
 
   const userPosts = posts.filter((post) => post.posterId.includes(uid))
 
-  console.log('ici', userPosts)
-
   return (
     <Context.Provider
       value={{
@@ -164,12 +137,6 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
         setUserDeleted,
       }}
     >
-      {/* {isLoading ? (
-        <LoaderContainer>
-          <Loader />
-        </LoaderContainer>
-      ) : ( */}
-
       {onlyUserPosts ? (
         <>
           {isLoading && (
@@ -192,7 +159,7 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
                 <img src={NoPost} alt="fake-post" />
                 <div className="text">
                   <span>Mes Posts !</span>
-                  <span>Vos posts apparîtront ici.</span>
+                  <span>Vos posts apparaîtront ici.</span>
                 </div>
               </div>
             )}
@@ -218,8 +185,6 @@ function Feed({ getPosts, setGetPosts, posts, setPosts, onlyUserPosts }) {
           </FeedWrapper>
         </>
       )}
-
-      {/* )} */}
     </Context.Provider>
   )
 }

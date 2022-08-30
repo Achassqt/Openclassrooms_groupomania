@@ -1,16 +1,19 @@
+import styled from 'styled-components'
+import colors from '../../utils/style/colors'
 import { BsPerson } from 'react-icons/bs'
 import {
   IoEllipsisHorizontalSharp,
   IoEllipsisHorizontalCircleOutline,
 } from 'react-icons/io5'
 import { MdEdit } from 'react-icons/md'
-import groupomaniaresponsive from '../../assets/icon-groupomania.png'
-import groupomania from '../../assets/icon-left-font-removebg-preview.png'
 import { IoCloseOutline } from 'react-icons/io5'
-import styled from 'styled-components'
-import { ButtonPoster } from '../../utils/style/Button.jsx'
+import { Button } from '../../utils/Button.jsx'
+
+import groupomania from '../../assets/icon-left-font-removebg-preview.png'
+import groupomaniaresponsive from '../../assets/icon-groupomania.png'
+
 import { Link } from 'react-router-dom'
-import colors from '../../utils/style/colors'
+
 import { useState, useContext, useEffect } from 'react'
 import { Context } from '../../utils/AppContext'
 import axios from 'axios'
@@ -25,19 +28,14 @@ const SideBarContent = styled.nav`
   top: 0;
   bottom: 0;
   width: 251px;
-  /* border-right: solid 1px ${colors.secondary}; */
 
   @media (max-width: 1150px) and (min-width: 501px) {
-    /* background-color: blue; */
     width: 64px;
-    /* padding: 0 12px; */
   }
 
   @media (max-width: 500px) {
-    /* width: 300px; */
     box-sizing: border-box;
     background-color: ${colors.tertiary};
-    /* border-right: solid 0.5px ${colors.secondary}; */
     box-shadow: ${colors.secondary} 0px 0px 5px;
   }
 `
@@ -82,8 +80,6 @@ const SideBarTop = styled.section`
 
   .logo-groupomania-responsive {
     display: none;
-    /* position: relative;
-    right: 33px; */
     height: 53px;
     width: 53px;
     margin-top: 10px;
@@ -96,12 +92,10 @@ const SideBarTop = styled.section`
   }
 
   .options {
-    /* width: 251px; */
     padding: 0;
     margin: 0;
     margin-top: 20px;
     list-style: none;
-    /* color: white; */
     font-size: 20px;
   }
 
@@ -175,11 +169,9 @@ const SideBarUser = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     width: 290px;
-    /* height: 120px; */
     border-radius: 12px;
     padding: 12px 0;
     color: white;
-    /* display: flex; */
     flex-direction: column;
     justify-content: space-between;
     box-shadow: 0 0 5px ${colors.secondary};
@@ -227,7 +219,6 @@ const SideBarUser = styled.div`
 
     .square {
       background-color: ${colors.tertiary};
-      /* background-color: red; */
       position: absolute;
       bottom: -14px;
       left: 50%;
@@ -258,7 +249,6 @@ const SideBarUser = styled.div`
   }
 
   .side-bar-user {
-    /* background-color: none; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -332,14 +322,11 @@ function SideBar({
 }) {
   const { uid, userRole, setUserDeleted, isLoading, setIsLoading } =
     useContext(Context)
+
   const [modalOpen, setModalOpen] = useState(false)
 
   const [userPseudo, setUserPseudo] = useState()
   const [userPicture, setUserPicture] = useState()
-
-  const userPosts = posts.filter((post) => post.posterId === uid)
-  const userLikes = posts.filter((post) => post.likers.includes(uid))
-  console.log(userLikes)
 
   useEffect(() => {
     setUserPseudo(userData.pseudo)
@@ -366,7 +353,10 @@ function SideBar({
     window.location = '/'
   }
 
-  const unlike = () => {
+  //cible les likes d'un utilisateur
+  const userLikes = posts.filter((post) => post.likers.includes(uid))
+
+  const unlikeAll = () => {
     userLikes.map((post) => {
       axios({
         method: 'patch',
@@ -377,6 +367,9 @@ function SideBar({
         .catch((err) => console.log(err))
     })
   }
+
+  //cible les posts d'un utilisateur
+  const userPosts = posts.filter((post) => post.posterId === uid)
 
   const supprAllUserPosts = () => {
     userPosts.map((post) => {
@@ -393,7 +386,7 @@ function SideBar({
   const suppr = async () => {
     setUserDeleted(true)
     supprAllUserPosts()
-    unlike()
+    unlikeAll()
     await axios({
       method: 'delete',
       url: `${process.env.REACT_APP_API_URL}api/user/${uid}`,
@@ -465,7 +458,7 @@ function SideBar({
             </StyledLink>
           )}
         </ul>
-        <ButtonPoster
+        <Button
           onClick={() => {
             window.scrollTo({
               top: 0,
@@ -476,8 +469,8 @@ function SideBar({
           className="button-tweeter"
         >
           Poster
-        </ButtonPoster>
-        <ButtonPoster
+        </Button>
+        <Button
           onClick={() => {
             window.scrollTo({
               top: 0,
@@ -488,7 +481,7 @@ function SideBar({
           className="button-tweeter-reponsive"
         >
           <MdEdit />
-        </ButtonPoster>
+        </Button>
       </SideBarTop>
       {uid ? (
         <SideBarUser>

@@ -1,11 +1,13 @@
-import styled from 'styled-components'
-import Log from '../../components/Log'
+import Log from '../../../components/Log'
+
 import { useState } from 'react'
+
 import axios from 'axios'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
   const [emailError, setEmailError] = useState()
   const [passwordError, setPasswordError] = useState()
 
@@ -23,11 +25,8 @@ function Login() {
     })
       .then((res) => {
         if (res.data.errors) {
-          const emailDataError = res.data.errors.email
-          setEmailError({ __html: emailDataError })
-
-          const passwordDataError = res.data.errors.password
-          setPasswordError({ __html: passwordDataError })
+          setEmailError(res.data.errors.email)
+          setPasswordError(res.data.errors.password)
         } else {
           window.location = '/home'
         }
@@ -37,24 +36,22 @@ function Login() {
       })
   }
 
-  const loginForm = [
+  const loginInputs = [
     {
-      id: 'login1',
       type: 'text',
       name: 'email',
       placeholder: 'Email',
       onChange: (e) => setEmail(e.target.value),
       value: email,
-      dangerouslySetInnerHTML: emailError,
+      error: emailError,
     },
     {
-      id: 'login2',
       type: 'password',
       name: 'password',
       placeholder: 'Mot de passe',
       onChange: (e) => setPassword(e.target.value),
       value: password,
-      dangerouslySetInnerHTML: passwordError,
+      error: passwordError,
     },
   ]
 
@@ -66,7 +63,7 @@ function Login() {
       link="/signup"
       linkName="Inscrivez-vous"
       handleFunction={handleLogin}
-      mapForm={loginForm}
+      logInput={loginInputs}
     />
   )
 }
