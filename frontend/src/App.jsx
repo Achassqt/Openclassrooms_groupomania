@@ -40,14 +40,6 @@ const App = () => {
     fetchToken()
   }, [uid])
 
-  // const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   if (uid) {
-  //     return navigate('/home')
-  //   }
-  // }, [uid])
-
   return (
     <BrowserRouter>
       <Context.Provider value={{ uid, userRole, isLoading, setIsLoading }}>

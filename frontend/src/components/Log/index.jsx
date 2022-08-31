@@ -170,7 +170,7 @@ function Log(props) {
     <LogWrapper>
       <LogContent>
         <header>
-          <Link onClick={() => props.setStopScroll(false)} to="/">
+          <Link to="/">
             <IoCloseOutline />
           </Link>
           <img src={iconGroupomania} alt="fezf" />

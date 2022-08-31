@@ -50,23 +50,25 @@ exports.updatePost = (req, res) => {
   // si le post contient une image et que la req aussi, suppression l'ancienne image
   Post.findOne({ _id: req.params.id })
     .then((post) => {
-      if (req.file && post.imageUrl !== undefined) {
-        const filename = post.imageUrl.split("/uploads/images/posts/")[1];
-        fs.unlink(`uploads/images/posts/${filename}`, (err) => {
-          if (err) {
-            throw err;
-          }
-        });
-      }
+      // if (req.file && post.imageUrl !== undefined) {
+      //   const filename = post.imageUrl.split("/uploads/images/posts/")[1];
+      //   fs.unlink(`uploads/images/posts/${filename}`, (err) => {
+      //     if (err) {
+      //       throw err;
+      //     }
+      //   });
+      // }
 
-      const postObject = req.file
-        ? {
-            ...req.body,
-            imageUrl: `${req.protocol}://${req.get(
-              "host"
-            )}/uploads/images/posts/${req.file.filename}`,
-          }
-        : { ...req.body };
+      const postObject =
+        // req.file
+        //   ? {
+        //       ...req.body,
+        //       imageUrl: `${req.protocol}://${req.get(
+        //         "host"
+        //       )}/uploads/images/posts/${req.file.filename}`,
+        //     }
+        //   :
+        { ...req.body };
 
       console.log(res.locals.user.role);
       // Mise à jour du post
