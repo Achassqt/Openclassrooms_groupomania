@@ -1,4 +1,4 @@
-# Projet 7: Créez un réseau social d'entreprise - MERN stack
+# Projet 7: Créez un réseau social d'entreprise
 
 
 
