@@ -1,6 +1,4 @@
-# Projet 7: Créez un réseau social d'entreprise
-
-
+# Goupomania
 
 # Installation du projet
 
@@ -39,3 +37,6 @@ Toujours à la racine du dossier **`frontend/`**, lancez la commande
 npm start
 ``` 
 pour lancer l'application
+
+## Contact 
+[Twitter](https://twitter.com/SqtSacha) / Email : sachsqt@gmail.com
